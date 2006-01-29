@@ -1,7 +1,7 @@
 
-#xcommand O_P_F_KUF     => select (F_P_KUF);   usex (PRIVPATH+"P_KUF") ; set order to tag "r_br"
+#xcommand O_P_KUF     => select (F_P_KUF);   usex (PRIVPATH+"P_KUF") ; set order to tag "r_br"
 
-#xcommand O_P_F_KIF     => select (F_P_KIF);   usex (PRIVPATH+"P_KIF") ; set order to tag "r_br"
+#xcommand O_P_KIF     => select (F_P_KIF);   usex (PRIVPATH+"P_KIF") ; set order to tag "r_br"
 
 #xcommand O_KUF     => select (F_KUF);   usex (KUMPATH+"KUF") ; set order to tag "datum"
 #xcommand O_KIF     => select (F_KIF);   usex (KUMPATH+"KIF") ; set order to tag "datum"

@@ -322,51 +322,51 @@ static function get_kif_fields()
 local aDbf
 
 aDbf:={}
-AADD(aDBf,{ "datum"      , "D" ,   8 ,  0 })
+AADD(aDBf,{ "datum" , "D" ,   8 ,  0 })
 
 // ne koristi se
-AADD(aDBf,{ "datum_2"      , "D" ,   8 ,  0 })
+AADD(aDBf,{ "datum_2" , "D" ,   8 ,  0 })
 
 // 1 - FIN
 // 2 - KALK
 // 3 - FAKT
 // 4 - OS
 // 5 - SII
-AADD(aDBf,{ "src"      , "C" ,   1 ,  0 })
+AADD(aDBf,{ "src"  , "C" ,   1 ,  0 })
 
 // tip dokumenta 
 // 
-AADD(aDBf,{ "td_src"      , "C" ,   2,  0 })
+AADD(aDBf,{ "td_src" , "C" ,   2,  0 })
 
 // podnivo src-a
 // ako nam je to potrebno, ako nije empty
-AADD(aDBf,{ "src_2"      , "C" ,   1,  0 })
+AADD(aDBf,{ "src_2"  , "C" ,   1,  0 })
 
-AADD(aDBf,{ "id_tar"    , "C" ,   6,  0 })
-AADD(aDBf,{ "id_part"   , "C" ,   6,  0 })
+AADD(aDBf,{ "id_tar" , "C" ,   6,  0 })
+AADD(aDBf,{ "id_part" , "C" ,   6,  0 })
 
 // id partner, id broj
-AADD(aDBf,{ "part_idbr"    , "C" ,   13,  0 })
+AADD(aDBf,{ "part_idbr" , "C" ,   13,  0 })
 
 // kategorija partnera
 // 1-pdv obveznik
 // 2-ne pdv obvezink
-AADD(aDBf,{ "part_kat"      , "C" ,   1,  0 })
+AADD(aDBf,{ "part_kat"  , "C" ,   1,  0 })
 
 // za ne-pdv obveznike
 //   1-federacija
 //   2-rs
 //   3-distrikt brcko
-AADD(aDBf,{ "part_kat_2"     , "C" ,   13,  0 })
+AADD(aDBf,{ "part_kat_2" , "C" ,   13,  0 })
 
 
 // source dokument prodajno mjesto
-AADD(aDBf,{ "src_pm"      , "C" ,  6,  0 })
+AADD(aDBf,{ "src_pm" , "C" ,  6,  0 })
 
-AADD(aDBf,{ "src_td"      , "C" ,  12,  0 })
+AADD(aDBf,{ "src_td" , "C" ,  12,  0 })
 
 // source dokument broj
-AADD(aDBf,{ "src_br"      , "C" ,  12,  0 })
+AADD(aDBf,{ "src_br" , "C" ,  12,  0 })
 
 // source dokument broj - veza
 //  ako slucaj avansne fakture:
@@ -376,12 +376,12 @@ AADD(aDBf,{ "src_br"      , "C" ,  12,  0 })
 //           i_b_pdv = 500 KM (placeno po avansnoj fakturi)
 //           i_v_b_pdv = 1000 KM (placeno po fakturi)
 //  kako vidimo veza broj je broj avansne fakture 
-AADD(aDBf,{ "src_veza_br"      , "C" ,  12,  0 })
+AADD(aDBf,{ "src_veza_br"  , "C" ,  12,  0 })
 
 
 // source dokument eksterni broj 
 // (br dobavljaca ako je razlicit od brdokumenta)
-AADD(aDBf,{ "src_br_2"      , "C" ,  12,  0 })
+AADD(aDBf,{ "src_br_2"  , "C" ,  12,  0 })
 
 
 // redni broj stavke
@@ -611,17 +611,21 @@ do case
 		nArea2 := F_SG_KUF
 endcase
 
-if (nArea==-1 .or. nArea==nArea2)
+if (nArea==-1 .or. nArea == nArea2)
 	
 	do case 
 		case cTable == "KUF" .or. cTable == "P_KUF"
 			aDbf := get_kuf_fields()
+			
 		case cTable == "KIF" .or. cTable == "P_KIF"
 			aDbf := get_kif_fields()
+			
 		case cTable == "SG_KIF" 
 			aDbf := g_sg_fields()
+			
 		case cTable == "SG_KUF" 
 			aDbf := g_sg_fields()
+			
 		case cTable == "PDV" 
 			aDbf := get_pdv_fields()
 			
@@ -636,19 +640,23 @@ if (nArea==-1 .or. nArea==nArea2)
 	endcase
 
 	
-	if !FILE(cPath + cTable)
+	if !FILE(cPath + cTable + ".DBF")
 		DBcreate2(cPath + cTable + ".DBF", aDbf)
 	endif
 
 	do case 
-		case nArea2 == F_KIF  .or. nArea2 == F_P_KIF
+		case (nArea2 == F_KIF)  .or. (nArea2 == F_P_KIF)
 		  CREATE_INDEX("datum","dtos(datum)", cPath + cTable)
 		  CREATE_INDEX("r_br","STR(r_br,6,0)+dtos(datum)", cPath + cTable)
 		 
-		case nArea2 == F_KUF .or. nArea2 == F_P_KUF
+		case (nArea2 == F_KUF) .or. (nArea2 == F_P_KUF)
 		  CREATE_INDEX("datum","dtos(datum)", cPath + cTable)
 		  CREATE_INDEX("r_br","STR(r_br,6,0)+dtos(datum)", cPath + cTable)
 		
+		case (nArea2 == F_SG_KUF) .or. (nArea2 == F_SG_KIF)
+		   altd()
+		   CREATE_INDEX("id","id", cPath + cTable)
+		   CREATE_INDEX("naz","id", cPath + cTable)
 	endcase
 		  
 		

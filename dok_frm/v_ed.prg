@@ -3,19 +3,23 @@
 // validacija
 
 function v_id_tar(cIdTar, nOsnov, nPdv,  nShow)
-local n_stopa 
+local nStopa 
 
-n_stopa := tarifa->opp
+PushWa()
 
-P_Tarifa(@c_id_tar)
+nStopa := tarifa->opp
 
-nPdv := ROUND(nOsnov * nStopa, ZAO_IZN())
+P_Tarifa(@cIdTar)
+
+nPdv := ROUND(nOsnov * nStopa / 100, ZAO_IZN())
 
 if nShow <> nil
-	@ row(), nShow SAY "Tarifa:" + stopa_pdv(nStopa)
-	@ row(), col() + 2 SAY "iznos pdv " PICT PIC_IZN()
+	@ row(), nShow + 2 SAY "Tarifa:" + stopa_pdv(nStopa)
+	@ row(), col() + 2 SAY "iznos pdv: " 
+	@ row(), col() + 2 SAY nPdV PICT PIC_IZN()
 endif
 
+PopWa()
 
 return .t.
 

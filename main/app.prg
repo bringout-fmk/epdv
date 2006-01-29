@@ -68,10 +68,6 @@ method mMenu()
 
 
 PID("START")
-if gSql=="D"
-	::oSqlLog:open()
-	::oDatabase:scan()
-endif
 
 close all
 
@@ -88,6 +84,8 @@ close all
 
 @ 1,2 SAY padc( gNFirma, 50, "*")
 @ 4,5 SAY ""
+
+s_params()
 
 ::mMenuStandard()
 
