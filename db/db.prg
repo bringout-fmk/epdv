@@ -384,8 +384,14 @@ AADD(aDBf,{ "src_veza_br"  , "C" ,  12,  0 })
 AADD(aDBf,{ "src_br_2"  , "C" ,  12,  0 })
 
 
-// redni broj stavke
-AADD(aDBf,{ "r_br"      , "N" ,   8,  0 })
+// redni broj stavke unutar dokumenta
+AADD(aDBf,{ "r_br"      , "N" ,   6,  0 })
+
+// broj kif dokumenta kod knjizenja
+AADD(aDBf,{ "br_dok"      , "N" ,   6,  0 })
+
+// globalni redni broj kif-a 
+AADD(aDBf,{ "g_r_br"      , "N" ,   8,  0 })
 
 // lock = D - zakljucano i ne moze se renumerisati i mjenjati 
 // (osim stavki kao sto je opis itd)
@@ -491,7 +497,14 @@ AADD(aDBf,{ "src_br_2"      , "C" ,  12,  0 })
 
 
 // redni broj stavke
-AADD(aDBf,{ "r_br"      , "N" ,   8,  0 })
+AADD(aDBf,{ "r_br"      , "N" ,   6,  0 })
+
+// broj kuf dokumenta kod knjizenja
+AADD(aDBf,{ "br_dok"      , "N" ,   6,  0 })
+
+
+// globalni redni broj kuf-a 
+AADD(aDBf,{ "g_r_br"      , "N" ,   8,  0 })
 
 // lock = D - zakljucano i ne moze se renumerisati i mjenjati 
 // (osim stavki kao sto je opis itd)
@@ -645,16 +658,16 @@ if (nArea==-1 .or. nArea == nArea2)
 	endif
 
 	do case 
-		case (nArea2 == F_KIF)  .or. (nArea2 == F_P_KIF)
+		case (nArea2 == F_P_KUF)  .or. (nArea2 == F_P_KIF)
 		  CREATE_INDEX("datum","dtos(datum)", cPath + cTable)
-		  CREATE_INDEX("r_br","STR(r_br,6,0)+dtos(datum)", cPath + cTable)
+		  CREATE_INDEX("br_dok", "STR(br_dok,6,0)+STR(r_br,6,0)", cPath + cTable)
 		 
-		case (nArea2 == F_KUF) .or. (nArea2 == F_P_KUF)
+		case (nArea2 == F_KUF) .or. (nArea2 == F_KIF)
 		  CREATE_INDEX("datum","dtos(datum)", cPath + cTable)
-		  CREATE_INDEX("r_br","STR(r_br,6,0)+dtos(datum)", cPath + cTable)
+		  CREATE_INDEX("g_r_br","STR(g_r_br,6,0)+dtos(datum)", cPath + cTable)
+		  CREATE_INDEX("BR_DOK","STR(BR_DOK, 6, 0)+STR(r_br,6,0)", cPath + cTable)
 		
 		case (nArea2 == F_SG_KUF) .or. (nArea2 == F_SG_KIF)
-		   altd()
 		   CREATE_INDEX("id","id", cPath + cTable)
 		   CREATE_INDEX("naz","id", cPath + cTable)
 	endcase

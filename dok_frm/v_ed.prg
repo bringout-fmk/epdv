@@ -1,7 +1,8 @@
 #include "sc.ch"
 
+// ----------------------------------------------
 // validacija
-
+// ----------------------------------------------
 function v_id_tar(cIdTar, nOsnov, nPdv,  nShow)
 local nStopa 
 

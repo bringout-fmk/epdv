@@ -16,7 +16,7 @@ function ed_kuf()
 read_params()
 
 // otvori tabele
-o_kuf()
+o_kuf(.t.)
 
 // prikazi tabelu pripreme
 tbl_priprema()
@@ -41,28 +41,6 @@ use
 */
 return
 
-// ------------------------------------------------
-// otvori tabele potrebne za ispravku kuf-a
-// ------------------------------------------------
-function o_kuf()
-
-select F_KUF
-if !used()
-	O_KUF
-endif
-
-select F_TARIFA
-if !used()
-	O_TARIFA
-endif
-
-select F_PARTN
-if !used()
-	O_PARTN
-endif
-
-return
-
 
 
 // ---------------------------------------------
@@ -80,10 +58,6 @@ private Kol
 
 SELECT (F_P_KUF)
 
-if !used()
-	O_P_KUF
-endif
-
 set_a_kol( @Kol, @ImeKol)
 ObjDbedit("ekuf", 20, 77, {|| k_handler()}, "", "KUF Priprema...", , , , , 3)
 BoxC()
@@ -97,11 +71,13 @@ static function set_a_kol( aKol, aImeKol )
 
 aImeKol := {}
 
-AADD(aImeKol, {"R.br", {|| r_br}, "r_br", {|| .t.}, {|| .t.} })
+AADD(aImeKol, {"Br.dok", {|| TRANSFORM(br_dok, "99999")}, "r_br", {|| .t.}, {|| .t.} })
+AADD(aImeKol, {"R.br", {|| TRANSFORM(r_br, "99999")}, "r_br", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"Datum", {|| datum}, "datum", {|| .t.}, {|| .t.} })
-AADD(aImeKol, { PADR("opis", 15), {|| PADR(opis, 13) + ".." }, "opis", {|| .t.}, {|| .t.} })
-AADD(aImeKol, {"i.b.pdv", {|| i_b_pdv}, "i_b_pdv", {|| .t.}, {|| .t.} })
-AADD(aImeKol, {"pdv", {|| i_pdv}, "i_pdv", {|| .t.}, {|| .t.} })
+AADD(aImeKol, { PADR("Dobavljac", 15), {|| PADR(s_partner(id_part), 13) + ".." }, "opis", {|| .t.}, {|| .t.} })
+AADD(aImeKol, { PADR("Opis", 15), {|| PADR(opis, 13) + ".." }, "opis", {|| .t.}, {|| .t.} })
+AADD(aImeKol, {"Izn.b.pdv", {|| TRANSFORM(i_b_pdv, PIC_IZN()) }, "i_b_pdv", {|| .t.}, {|| .t.} })
+AADD(aImeKol, {"Izn.pdv", {|| TRANSFORM(i_pdv, PIC_IZN()) }, "i_pdv", {|| .t.}, {|| .t.} })
 
 
 aKol:={}
@@ -113,15 +89,19 @@ return
 
 
 // ---------------------------------------------
+// ispravka jedne stavke 
 // ---------------------------------------------
 static function ed_item(lNova)
 local cIspravno := "D"
 local nI_s_pdv := 0
-local nX := 1
+local nX := 2
+local nXPart := 0
+local nYPart := 22
 
 Box(, 14, 70)
 if lNova
-	_r_br := next_rbr()
+	_br_dok := 0
+	_r_br := next_r_br("P_KUF")
 	_id_part:= SPACE(LEN(id_part))
 	_id_tar:= PADR("PDV17", LEN(id_tar))
 	_datum := DATE()
@@ -130,12 +110,23 @@ if lNova
 	_i_pdv := 0
 endif
 
-@ m_x + nX, m_y+2 SAY "R.br: " GET _r_br
+@ m_x + nX, m_y+2 SAY "R.br: " GET _r_br ;
+	PICT "999999"
+	
 @ m_x + nX, col()+2 SAY "datum: " GET _datum
-nX += 1
+nX += 2
+
+nXPart := nX
+@ m_x + nX, m_y+2 SAY "Dobavljac: " GET _id_part ;
+	VALID  p_part(@_id_part) ;
+	
+nX += 2
+
 
 @ m_x + nX, m_y+2 SAY "opis: " GET _opis ;
+	WHEN { || SETPOS(m_x + nXPart, m_y + nYPart), QQOUT(s_partner(_id_part)) , .t. } ;
 	PICT "@S50"
+	
 nX += 2
 
 @ m_x + nX, m_y+2 SAY "Iznos bez PDV (osnovica): " GET _i_b_pdv ;
@@ -147,7 +138,7 @@ nX += 2
 ++nX
 
 @ m_x + nX, m_y+2 SAY "Iznos sa PDV: " GET _i_pdv ;
-        valid { || nI_s_pdv := _i_b_pdv + _i_pdv, .t. } ;
+        WHEN { || nI_s_pdv := _i_b_pdv + _i_pdv, .f. } ;
 	PICT PIC_IZN()
 ++nX
 
@@ -162,6 +153,8 @@ nX += 2
 ++nX
 
 read
+
+SELECT F_P_KUF
 BoxC()
 
 ESC_RETURN .f.
@@ -169,19 +162,13 @@ ESC_RETURN .f.
 return .t.
 *}
 
-// ------------------------
-// ------------------------
-static function next_rbr()
-SELECT p_kuf
-GO BOTTOM
-nLastRbr := r_br
-return nLastRbr + 1
 
 
 // ---------------------------------------------
 // tabela KUF keyboard handler 
 // ---------------------------------------------
 static function k_handler()
+local nTekRec
 
 if (Ch==K_CTRL_T .or. Ch==K_ENTER) .and. reccount2()==0
 	return DE_CONT
@@ -210,27 +197,42 @@ do case
    case (Ch == K_ENTER)
  
  	SELECT P_KUF
+	nTekRec := RECNO()
   	Scatter()
   	if ed_item(.f.)
+		SELECT P_KUF
+		GO nTekRec
 		Gather()
 		RETURN DE_REFRESH
 	endif
 	return DE_CONT
 	
    case (Ch == K_CTRL_N)
-   
+
+	// stavke unosimo cirkularno do ESC znaka
+ 	DO WHILE .t.
+	
    	SELECT P_KUF
-        Scatter()	
-        APPEND BLANK
+	APPEND BLANK
+	nTekRec := RECNO()
+        Scatter()
 	
 	if ed_item(.t.)
 	
+		
       		//EventLog(nUser, goModul:oDataBase:cName, "DOK", "EDIT", nDug, nPot, nil, nil, "", "", "Unos stavke ....", Date(), Date(), "", "KUF - nova stavka")
+		GO nTekRec
 		Gather()
-	        return DE_REFRESH
 	else
-		return DE_CONT
+		// brisi necemo ovu stavku
+		SELECT P_KUF
+		go nTekRec
+		DELETE
+		exit
 	endif
+	ENDDO 
+
+	return DE_REFRESH
 	
    case (Ch  == K_CTRL_F9)
    
@@ -242,9 +244,23 @@ do case
         return DE_CONT
 
    case Ch==K_CTRL_P
+   
      	rpt_d_kuf()
+	close all
+	o_kuf(.t.)
+	SELECT P_KUF
+
      	return DE_REFRESH
 
+   case Ch==K_ALT_A
+   
+   	if Pitanje( , "Azurirati P_KUF -> KUF ?", "N") == "D"
+	  	azur_kuf()
+		RETURN DE_REFRESH
+	else
+		RETURN DE_CONT
+	endif
+	
 
    case (Ch == K_F10)
      	t_ost_opcije()

@@ -3,15 +3,14 @@ all:
 	rm -f main/e.obj
 	make -C main
 	make -C db
-	#make -C db_raz
 	make -C dok_gen
 	make -C dok_rpt
 	make -C dok_frm
 	make -C rpt
 	make -C sif
 	make -C param
-	#make -C ut
 	make -C exe
+	make -C util 
 	
 
 clean:
@@ -24,6 +23,7 @@ clean:
 	make -C rpt clean
 	make -C sif clean
 	make -C param clean
+	make -C util clean
 	
 
 zip:
