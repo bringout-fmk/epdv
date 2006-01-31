@@ -52,6 +52,7 @@ static function tbl_priprema()
 Box(,20,77)
 @ m_x+18,m_y+2 SAY "<c-N>  Nove Stavke    | <ENT> Ispravi stavku   | <c-T> Brisi Stavku         "
 @ m_x+19,m_y+2 SAY "<c-A>  Ispravka Naloga| <c-P> Stampa dokumenta | <a-A> Azuriranje           "
+@ m_x+20,m_y+2 SAY "<a-P>  Povrat dok.    |"
 
 private ImeKol
 private Kol
@@ -169,6 +170,7 @@ return .t.
 // ---------------------------------------------
 static function k_handler()
 local nTekRec
+local nBrDokP
 
 if (Ch==K_CTRL_T .or. Ch==K_ENTER) .and. reccount2()==0
 	return DE_CONT
@@ -261,6 +263,22 @@ do case
 		RETURN DE_CONT
 	endif
 	
+   case Ch==K_ALT_P
+   
+   	if Pitanje( , "Povrat dokumenta KUF -> P_KUF ?", "N") == "D"
+		nBrDokP := 0
+		Box(, 1, 40)
+		  @ m_x+1, m_y+2 SAY "KUF dokument br:" GET nBrDokP  PICT "999999"
+		   
+		  READ
+		BoxC()
+
+		if LASTKEY()<> K_ESC
+			pov_kuf(nBrDokP)
+			RETURN DE_REFRESH
+		endif
+	endif
+	RETURN DE_CONT
 
    case (Ch == K_F10)
      	t_ost_opcije()
