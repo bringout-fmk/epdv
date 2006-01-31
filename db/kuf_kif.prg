@@ -154,6 +154,7 @@ seek STR(nBrdok, 6, 0)
 
 
 if !found()
+	SELECT (nPArea)
 	return 0
 endif
 

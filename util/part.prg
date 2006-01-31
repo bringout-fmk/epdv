@@ -40,6 +40,26 @@ cPom += ", " + cIdBroj
 PopWa()
 return cPom
 
+// -----------------------------------------------
+// podaci o mojoj firmi ubaceni u partnera "10"
+// -----------------------------------------------
+function my_firma()
+local cIdBroj
+local cPom := gNFirma
+PushWa()
+
+o_partn()
+seek gFirma
+
+cIdBroj := IzSifK("PARTN", "REGB", gFirma, .f.)
+if !EMPTY(cIdBroj)
+	cPom += " id.br: " + cIdBroj
+endif
+
+PopWa()
+return cPom
+
+
 
 // -------------------------------------
 // sifrarnik partnera sa sifk/sifv

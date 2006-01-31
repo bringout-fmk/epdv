@@ -74,11 +74,14 @@ aImeKol := {}
 
 AADD(aImeKol, {"Br.dok", {|| TRANSFORM(br_dok, "99999")}, "r_br", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"R.br", {|| TRANSFORM(r_br, "99999")}, "r_br", {|| .t.}, {|| .t.} })
+
 AADD(aImeKol, {"Datum", {|| datum}, "datum", {|| .t.}, {|| .t.} })
 AADD(aImeKol, { PADR("Dobavljac", 15), {|| PADR(s_partner(id_part), 13) + ".." }, "opis", {|| .t.}, {|| .t.} })
-AADD(aImeKol, { PADR("Opis", 15), {|| PADR(opis, 13) + ".." }, "opis", {|| .t.}, {|| .t.} })
+AADD(aImeKol, { PADR("Br.dob - Opis", 17), {|| PADR(ALLTRIM(src_br_2) + "-" + opis, 15) + ".." }, "", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"Izn.b.pdv", {|| TRANSFORM(i_b_pdv, PIC_IZN()) }, "i_b_pdv", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"Izn.pdv", {|| TRANSFORM(i_pdv, PIC_IZN()) }, "i_pdv", {|| .t.}, {|| .t.} })
+AADD(aImeKol, {"Izn.s.pdv", {|| TRANSFORM(i_b_pdv+i_pdv, PIC_IZN()) }, "", {|| .t.}, {|| .t.} })
+
 
 
 aKol:={}
@@ -99,7 +102,7 @@ local nX := 2
 local nXPart := 0
 local nYPart := 22
 
-Box(, 14, 70)
+Box(, 16, 70)
 if lNova
 	_br_dok := 0
 	_r_br := next_r_br("P_KUF")
@@ -109,6 +112,7 @@ if lNova
 	_opis:= SPACE(LEN(opis))
 	_i_b_pdv := 0
 	_i_pdv := 0
+	_src_br_2 := SPACE(LEN(src_br_2))
 endif
 
 @ m_x + nX, m_y+2 SAY "R.br: " GET _r_br ;
@@ -120,11 +124,15 @@ nX += 2
 nXPart := nX
 @ m_x + nX, m_y+2 SAY "Dobavljac: " GET _id_part ;
 	VALID  p_part(@_id_part) ;
+	PICT "@!"
 	
 nX += 2
 
 
-@ m_x + nX, m_y+2 SAY "opis: " GET _opis ;
+@ m_x + nX, m_y+2 SAY "Broj racuna (externi broj) " GET _src_br_2 
+nX ++
+
+@ m_x + nX, m_y+2 SAY "Opis stavke: " GET _opis ;
 	WHEN { || SETPOS(m_x + nXPart, m_y + nYPart), QQOUT(s_partner(_id_part)) , .t. } ;
 	PICT "@S50"
 	
@@ -135,7 +143,9 @@ nX += 2
 ++nX
 
 @ m_x + nX, m_y+2 SAY "tarifa: " GET _id_tar ;
-	valid v_id_tar(@_id_tar, @_i_b_pdv, @_i_pdv,  col())  
+	valid v_id_tar(@_id_tar, @_i_b_pdv, @_i_pdv,  col())  ;
+	PICT "@!"
+	
 ++nX
 
 @ m_x + nX, m_y+2 SAY "Iznos sa PDV: " GET _i_pdv ;
@@ -233,7 +243,8 @@ do case
 		exit
 	endif
 	ENDDO 
-
+	
+	GO BOTTOM
 	return DE_REFRESH
 	
    case (Ch  == K_CTRL_F9)
@@ -247,7 +258,15 @@ do case
 
    case Ch==K_CTRL_P
    
-     	rpt_d_kuf()
+   	nBrDokP := 0
+   	Box( , 2, 60)
+	@ m_x+1, m_y+2 SAY "Dokument (0-stampaj pripremu) " GET nBrDokP PICT "999999"
+	READ
+	BoxC()
+	if LASTKEY() <> K_ESC
+	     	rpt_kuf(nBrDokP)
+	endif
+	
 	close all
 	o_kuf(.t.)
 	SELECT P_KUF
@@ -278,7 +297,9 @@ do case
 			RETURN DE_REFRESH
 		endif
 	endif
-	RETURN DE_CONT
+	
+	SELECT P_KUF
+	RETURN DE_REFRESH
 
    case (Ch == K_F10)
      	t_ost_opcije()

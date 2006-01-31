@@ -86,12 +86,9 @@ show_rpt(  .f.,  .f.)
 close all
 *}
 
-/*! \fn get_r_kif(aArr)
- *  \brief napuni matricu aArr sa specifikacijom polja tabele
- *  \param aArr - matrica
- */
+// ----------------------------------------------
+// ----------------------------------------------
 static function get_r_fields(aArr)
-*{
 AADD(aArr, {"br_dok",   "N",  6, 0})
 AADD(aArr, {"dat_az",   "D",  8, 0})
 // datum dokumenta min - max
@@ -101,10 +98,10 @@ AADD(aArr, {"i_b_pdv",   "N",  18, 2})
 AADD(aArr, {"i_pdv",   "N",  18, 2})
 
 return
-*}
 
+// ----------------------------------------
+// ----------------------------------------
 static function cre_r_tbl()
-*{
 
 local aArr:={}
 
@@ -123,7 +120,9 @@ CREATE_INDEX("br_dok", "br_dok", PRIVPATH +  cTbl, .t.)
 return
 *}
 
+// --------------------------------------------------------
 // napuni r_kuf
+// --------------------------------------------------------
 static function fill_rpt()
 *{
 
@@ -238,8 +237,6 @@ static function show_rpt()
 *{
 
 nCurrLine := 0
-
-
 
 
 START PRINT CRET
