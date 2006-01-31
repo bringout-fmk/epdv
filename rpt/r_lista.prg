@@ -72,7 +72,7 @@ endif
 
 aHeader := {}
 AADD(aHeader, "Preduzece: " + gNFirma)
-AADD(aHeader, cRptNaziv +  DTOC(dDate) + ", za period :" + DTOC(dDatOd) + "-" + DTOC(dDatDo) )
+AADD(aHeader, cTName + " : " + cRptNaziv +  DTOC(dDate) + ", za period :" + DTOC(dDatOd) + "-" + DTOC(dDatDo) )
 
 aZagl:={}
 AADD(aZagl, { "Broj" ,  "Datum",  "Dat.d", "Dat.d",    "iznos" , "iznos",    "iznos" })
@@ -240,7 +240,7 @@ nCurrLine := 0
 
 
 START PRINT CRET
-P_COND2
+P_12CPI
 
 nPageLimit := 65
 nRow := 0
@@ -340,7 +340,7 @@ return
 static function r_zagl()
 
 // header
-P_COND
+P_12CPI
 B_ON
 for i:=1 to LEN(aHeader)
  ? aHeader[i]
@@ -348,7 +348,7 @@ for i:=1 to LEN(aHeader)
 next
 B_OFF
 
-P_COND2
+P_12CPI
 
 r_linija()
 

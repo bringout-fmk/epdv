@@ -210,6 +210,8 @@ cre_tbls(nArea, "P_KUF")
 cre_tbls(nArea, "SG_KIF")
 cre_tbls(nArea, "SG_KUF")
 
+cre_sifk(nArea)
+
 return
 
 
@@ -602,6 +604,45 @@ AADD(aDBf,{ "kat_part"      , "C" ,   1,  0 })
 return aDbf
 
 
+function g_sifk_fields(aDbf)
+		
+aDbf := {}
+AADD(aDBf,{ 'ID'                  , 'C' ,   8 ,  0 })
+AADD(aDBf,{ 'SORT'                , 'C' ,   2 ,  0 })
+AADD(aDBf,{ 'NAZ'                 , 'C' ,  25 ,  0 })
+AADD(aDBf,{ 'Oznaka'              , 'C' ,   4 ,  0 })
+AADD(aDBf,{ 'Veza'                , 'C' ,   1 ,  0 })
+AADD(aDBf,{ 'Unique'              , 'C' ,   1 ,  0 })
+AADD(aDBf,{ 'Izvor'               , 'C' ,  15 ,  0 })
+AADD(aDBf,{ 'Uslov'               , 'C' , 100 ,  0 })
+AADD(aDBf,{ 'Duzina'              , 'N' ,   2 ,  0 })
+AADD(aDBf,{ 'Decimal'             , 'N' ,   1 ,  0 })
+AADD(aDBf,{ 'Tip'                 , 'C' ,   1 ,  0 })
+AADD(aDBf,{ 'KVALID'              , 'C' , 100 ,  0 })
+AADD(aDBf,{ 'KWHEN'               , 'C' , 100 ,  0 })
+AADD(aDBf,{ 'UBROWSU'             , 'C' ,   1 ,  0 })
+AADD(aDBf,{ 'EDKOLONA'            , 'N' ,   2 ,  0 })
+AADD(aDBf,{ 'K1'                  , 'C' ,   1 ,  0 })
+AADD(aDBf,{ 'K2'                  , 'C' ,   2 ,  0 })
+AADD(aDBf,{ 'K3'                  , 'C' ,   3 ,  0 })
+AADD(aDBf,{ 'K4'                  , 'C' ,   4 ,  0 })
+// Primjer:
+// ID   = ROBA
+// NAZ  = Barkod
+// Oznaka = BARK
+// VEZA  = N ( 1 - moze biti samo jedna karakteristika, N - n karakteristika)
+// UNIQUE = D - radi se o jedinstvenom broju
+// Izvor =  ( sifrarnik  koji sadrzi moguce vrijednosti)
+// Uslov =  ( za koje grupe artikala ova karakteristika je interesantna
+// Tip = C ( N numericka, C - karakter, D datum )
+// Valid = "ImeFje()"
+// validacija  mogu biti vrijednosti A,B,C,D
+//             aktiviraj funkciju ImeFje()
+
+return aDbf
+
+
+
 // cre kuf tabelu
 function cre_tbls(nArea, cTable)
 local nArea2 := 0
@@ -675,6 +716,49 @@ if (nArea==-1 .or. nArea == nArea2)
 		
 endif
 return 
+
+
+// --------------------------------
+// --------------------------------
+function cre_sifk(nArea)
+local cTbl
+
+if (nArea==-1 .or. nArea == F_SIFK)
+
+	aDbf := g_sifk_fields()
+	cTbl := "SIFK"
+
+	if !FILE( SIFPATH+ cTbl + '.DBF' )
+		dbcreate2(SIFPATH+ cTbl + '.DBF', aDbf)
+	endif
+	
+	CREATE_INDEX("ID","id+SORT+naz", SIFPATH+cTbl)
+	CREATE_INDEX("ID2","id+oznaka", SIFPATH+cTbl)
+	CREATE_INDEX("NAZ","naz", SIFPATH+cTbl)
+endif
+
+return
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
