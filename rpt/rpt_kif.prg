@@ -119,10 +119,11 @@ AADD(aHeader, "Preduzece: " + my_firma() )
 
 AADD(aHeader, cHeader )
 
-if !empty(cIdTarifa)
-	cPom := "Prikaz kategorije : " + s_tarifa(cIdTarifa)
+if !empty(cTar)
+	cPom := "Prikaz kategorije : " + s_tarifa(cTar)
 	AADD(aHeader, cPom)
 endif
+
 	
 
 aZagl:={}

@@ -218,7 +218,7 @@ return
 // ----------------------------------------------
 // pdv fields
 // ----------------------------------------------
-static function get_pdv_fields()
+function get_pdv_fields()
 
 local aDbf
 
@@ -282,7 +282,7 @@ AADD(aDBf,{ "i_pdv_nr_3" , "N" ,   18 ,  2 })
 AADD(aDBf,{ "i_pdv_nr_4" , "N" ,   18 ,  2 })
 
 
-// 41 - ulazini
+// 41 - ulazni pdv, registrovani obveznici
 AADD(aDBf,{ "u_pdv_r" , "N" ,   18 ,  2 })
 // 42 - uvoz
 AADD(aDBf,{ "u_pdv_uv" , "N" ,   18 ,  2 })

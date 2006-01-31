@@ -6,7 +6,7 @@
 * ----------------------------------------------------------------
 */
 
-function s_tarifa(cIdTarifa)
+function s_tarifa(cIdTar)
 local cPom
 
 PushWa()
@@ -28,5 +28,32 @@ endif
 
 PopWa()
 return cPom
+
+
+// -----------------------------
+// get stopu za tarifu
+// -----------------------------
+function g_pdv_stopa(cIdTar)
+local nStopa
+
+PushWa()
+
+SELECT (F_TARIFA)
+
+if !used()
+	O_TARIFA
+endif
+SET ORDER TO TAG "ID"
+
+seek PADR(cIdTar, 6)
+
+if !found()
+	nStopa := -999
+else
+	nStopa := tarifa->opp
+endif
+
+PopWa()
+return nStopa
 
 

@@ -28,6 +28,18 @@ if !found()
 	replace opp with 17
 endif
 
+
+// stopa 0
+cPom:=PADR("PDV0" ,6)
+seek cPom
+if !found()
+	append blank
+	replace id with cPom
+	replace naz with "PDV 0%"
+	replace opp with 0
+endif
+
+
 // nabavka od ne-pdv obvenznika
 cPom:=PADR("PDV0N" ,6)
 seek cPom
@@ -59,6 +71,8 @@ if !found()
 	replace opp with 0
 endif
 
+
+
 // uvoz  oporezivo
 cPom:=PADR("PDV7UV" ,6)
 seek cPom
@@ -68,6 +82,30 @@ if !found()
 	replace naz with "UVOZ OPOREZIVO, PDV 17"
 	replace opp with 17
 endif
+
+
+// stalna sredstva, oporezivo
+cPom:=PADR("PDV7SS" ,6)
+seek cPom
+if !found()
+	append blank
+	replace id with cPom
+	replace naz with "STALNA SREDSTVA, PDV 17"
+	replace opp with 17
+endif
+
+// stalna sredstva, oporezivo
+cPom:=PADR("PDV7SU" ,6)
+seek cPom
+if !found()
+	append blank
+	replace id with cPom
+	replace naz with "STALNA SREDSTVA, UVOZ, PDV 17"
+	replace opp with 17
+endif
+
+
+
 
 // uvoz  neoporezivo
 cPom:=PADR("PDV0UV" ,6)

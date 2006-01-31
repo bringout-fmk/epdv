@@ -63,6 +63,24 @@ PopWa()
 return cPom
 
 
+// -----------------------------------------------
+// ger rejon partnera
+//  - 1 ili " " federacija
+//  - 2 - rs
+//  - 3 - brcko district
+// -----------------------------------------------
+function part_rejon(cIdPart)
+local cRejon
+PushWa()
+
+o_partn()
+seek gFirma
+
+cRejon := IzSifK("PARTN", "REJO", cIdPart, .f.)
+
+PopWa()
+return cRejon
+
 
 // -------------------------------------
 // sifrarnik partnera sa sifk/sifv
