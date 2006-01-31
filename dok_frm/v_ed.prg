@@ -8,9 +8,13 @@ local nStopa
 
 PushWa()
 
-nStopa := tarifa->opp
 
 P_Tarifa(@cIdTar)
+
+SELECT TARIFA
+SET ORDER TO TAG "ID"
+SEEK cIdTar
+nStopa := tarifa->opp
 
 nPdv := ROUND(nOsnov * nStopa / 100, ZAO_IZN())
 

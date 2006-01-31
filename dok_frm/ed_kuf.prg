@@ -102,6 +102,8 @@ local nX := 2
 local nXPart := 0
 local nYPart := 22
 
+UsTipke()
+
 Box(, 16, 70)
 if lNova
 	_br_dok := 0
@@ -231,7 +233,6 @@ do case
 	
 	if ed_item(.t.)
 	
-		
       		//EventLog(nUser, goModul:oDataBase:cName, "DOK", "EDIT", nDug, nPot, nil, nil, "", "", "Unos stavke ....", Date(), Date(), "", "KUF - nova stavka")
 		GO nTekRec
 		Gather()

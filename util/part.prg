@@ -5,8 +5,8 @@
 *                           Copyright Sigma-com software 2006
 * ----------------------------------------------------------------
 */
-
 function s_partner(cIdPartn)
+
 local cPom
 local cIdBroj
 
@@ -21,14 +21,17 @@ cPom := ""
 
 cPom += ALLTRIM(naz) 
 
+
 cMjesto := ALLTRIM(mjesto)
 if EMPTY(cMjesto)
 	cMjesto := "-NEP.MJ-"
 endif
 
 if !EMPTY(ptt)
-	cPom += ALLTRIM(ptt) + " " + cMjesto
+	cMjesto := ALLTRIM(ptt) + " " + cMjesto
 endif
+
+cPom += ", " + cMjesto
 
 cIdBroj := IzSifK("PARTN", "REGB", cIdPartn, .f.)
 if EMPTY(cIdBroj)

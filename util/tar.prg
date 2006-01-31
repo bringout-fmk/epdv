@@ -29,11 +29,4 @@ endif
 PopWa()
 return cPom
 
-// -----------------------------------------------
-// podaci o mojoj firmi ubaceni u partnera "10"
-// -----------------------------------------------
-function my_firma()
-loca cIdBroj
-local cPom := gNFirma
-PushWa()
 
