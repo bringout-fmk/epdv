@@ -90,8 +90,8 @@ if lNepopunjeno
 			
 endif
 
-cPom := TRIM(cNaziv) + ", Id.br: " + cIdBroj + " , " + cPtt + " " + cMjesto
-cPom += " , " + cAdresa
+cPom := TRIM(cNaziv) + ", Id.br: " + cIdBroj + " , " + cPtt + " " + ALLTRIM(cMjesto)
+cPom += " , " + ALLTRIM(cAdresa)
 
 PopWa()
 return cPom
