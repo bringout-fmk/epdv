@@ -711,6 +711,10 @@ if (nArea==-1 .or. nArea == nArea2)
 		case (nArea2 == F_SG_KUF) .or. (nArea2 == F_SG_KIF)
 		   CREATE_INDEX("id","id", cPath + cTable)
 		   CREATE_INDEX("naz","id", cPath + cTable)
+
+		case (nArea2 == F_PDV) 
+		   CREATE_INDEX("period","DTOS(per_od)+DTOS(per_do)", cPath + cTable)
+		
 	endcase
 		  
 		

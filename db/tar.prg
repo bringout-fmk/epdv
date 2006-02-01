@@ -118,14 +118,24 @@ if !found()
 endif
 
 
-// nabavka neposlovne svrhe - ne priznaje se ul porez
+// nabavka neposlovne svrhe - ne priznaje se izl porez
 cPom:=PADR("PDV0NP" ,6)
 seek cPom
 if !found()
 	append blank
 	replace id with cPom
-	replace naz with "NEPOSLOVNE SVRHE, UL. PDV = 0"
+	replace naz with "NEPOSLOVNE SVRHE, NAB.UL.PDV = 0"
 	replace opp with 0
+endif
+
+// isporuka neposlovne svrhe - izl. pdv standardno
+cPom:=PADR("PDV7NP" ,6)
+seek cPom
+if !found()
+	append blank
+	replace id with cPom
+	replace naz with "NEPOSLOVNE SVRHE, ISP. IZL.PDV = 17"
+	replace opp with 17
 endif
 
 
@@ -140,7 +150,7 @@ if !found()
 endif
 
 
-// prodaja, izvoz
+// isporuke, izvoz
 cPom:=PADR("PDV0IZ" , 6)
 seek cPom
 if !found()
