@@ -172,6 +172,7 @@ do while !eof()
 
 cIdTar := id_tar
 nBPdv := i_b_pdv
+nPdv := i_pdv
 
 do case 
 	case t_nab_opor(cIdTar)
@@ -190,11 +191,11 @@ if ROUND( g_pdv_stopa(cIdTar), 2) > 0
 
 	if IsIno(id_part)
 		// 42 - uvoz, na osnovu sifre partnera
-		_u_pdv_uv += nBPdv
+		_u_pdv_uv += nPdv
 	else
 		// sve ostalo moraju biti domaci obveznici
 		// 41 - ulazni pdv, registrovani obveznici
-		_u_pdv_r += nBPdv
+		_u_pdv_r += nPdv
 	endif
 endif
 
@@ -240,15 +241,16 @@ do while !eof()
 
 cIdTar := id_tar
 nBPdv := i_b_pdv
+nPdv := i_pdv
 
 do case
 
 	case t_isp_opor(cIdTar)
 		// 11 - oporezive isporuke
 		_isp_opor += nBPdv
-	case t_isp_izvoz(cIdTar)
+	case t_isp_izv(cIdTar)
 		// 12 - isporuke izvoz
-		_isp_izvoz += nBPdv
+		_isp_izv += nBPdv
 	case t_isp_neopor(cIdTar)
 		// 13 - ostale neoporezive isporuke
 		_isp_neopor += nBPdv
@@ -265,7 +267,7 @@ if ROUND( g_pdv_stopa(cIdTar), 2) > 0
 
 	if IsPdvObveznik(id_part)
 
-		_i_pdv_r += nBPdv
+		_i_pdv_r += nPdv
 	
 	else
 		cRejon := part_rejon(id_part)
@@ -273,14 +275,14 @@ if ROUND( g_pdv_stopa(cIdTar), 2) > 0
 		do case
 			case cRejon == "2"
 				// rs
-				_i_pdv_nr_2 += nBPdv
+				_i_pdv_nr_2 += nPdv
 			
 			case cRejon == "3"
 				// bd
-				_i_pdv_nr_3 += nBPdv
+				_i_pdv_nr_3 += nPdv
 			otherwise
 				// federacija
-				_i_pdv_nr_1 += nBPdv
+				_i_pdv_nr_1 += nPdv
 		endcase
 	endif
 				
@@ -446,14 +448,14 @@ show_raz_1()
 
 cPom := PADR("11. Oporezive isporuke ", RPT_W2) + TRANSFORM(isp_opor, PIC_IZN())
 // sirina kolone - indent
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju kolona
 ?? SPACE(RPT_GAP)
 
 ?? SPACE(RPT_RI)
 cPom := PADR("21. Oporezive nabavke ", RPT_W2) + TRANSFORM(nab_opor, PIC_IZN())
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 
 // razmak izmedju dva reda -----------------------------------------
@@ -463,7 +465,7 @@ show_raz_1()
 cPom := PADR("12. Izvoz ", RPT_W2) + TRANSFORM(isp_izv, PIC_IZN())
 // sirina kolone - indent
 ?? SPACE(RPT_RI)
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju kolona
 ?? SPACE(RPT_GAP)
@@ -471,7 +473,7 @@ cPom := PADR("12. Izvoz ", RPT_W2) + TRANSFORM(isp_izv, PIC_IZN())
 // 22
 ?? SPACE(RPT_RI)
 cPom := PADR("22. Uvoz ", RPT_W2) + TRANSFORM(nab_uvoz, PIC_IZN())
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 
 // razmak izmedju dva reda -----------------------------------------
@@ -483,7 +485,7 @@ show_raz_1()
 // 13
 cPom := PADR("13. Neoporezive isporuke ", RPT_W2) + TRANSFORM(isp_neopor, PIC_IZN())
 // sirina kolone - indent
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju kolona
 ?? SPACE(RPT_GAP)
@@ -491,7 +493,7 @@ cPom := PADR("13. Neoporezive isporuke ", RPT_W2) + TRANSFORM(isp_neopor, PIC_IZ
 ?? SPACE(RPT_RI)
 // 23
 cPom := PADR("23. Nabavke oslobodjene PDV-a ", RPT_W2) + TRANSFORM(nab_ne_opor, PIC_IZN())
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 
 // razmak izmedju dva reda -----------------------------------------
@@ -502,7 +504,7 @@ show_raz_1()
 cPom := PADR("14. Upotr neposl. svrhe ", RPT_W2) + TRANSFORM(isp_nep_svr, PIC_IZN())
 // sirina kolone - indent
 ?? SPACE(RPT_RI)
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju kolona
 ?? SPACE(RPT_GAP)
@@ -510,7 +512,7 @@ cPom := PADR("14. Upotr neposl. svrhe ", RPT_W2) + TRANSFORM(isp_nep_svr, PIC_IZ
 ?? SPACE(RPT_RI)
 // 24
 cPom := PADR("24. Nabavke stalnih sredstava ", RPT_W2) + TRANSFORM(nab_st_sr, PIC_IZN())
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // -------------------- II dio izvjestaja ----------------------------------
 
@@ -521,7 +523,7 @@ show_raz_1()
 
 B_ON
 U_ON
-?? PADR("II. Izlazni PDV", RPT_COL - RPT_BOLD_DELTA)
+?? PADR("II. Izlazni PDV", RPT_COL - RPT_BOLD_DELTA )
 U_OFF
 B_OFF
 
@@ -557,7 +559,7 @@ show_raz_1()
 // 31
 cPom := PADR("31. Registrovani PDV obv.", RPT_W2) + TRANSFORM(i_pdv_r , PIC_IZN())
 // sirina kolone - indent
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju kolona
 ?? SPACE(RPT_GAP)
@@ -565,7 +567,7 @@ cPom := PADR("31. Registrovani PDV obv.", RPT_W2) + TRANSFORM(i_pdv_r , PIC_IZN(
 ?? SPACE(RPT_RI)
 // 41
 cPom := PADR("41. Registrovani PDV obv.", RPT_W2) + TRANSFORM(u_pdv_r, PIC_IZN())
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju dva reda -----------------------------------------
 show_raz_1()
@@ -574,7 +576,7 @@ show_raz_1()
 ?? SPACE(RPT_RI)
 cPom := "Lica koja nisu reg PDV obveznici iz:"
 // sirina kolone - indent
-?? PADR(cPom, RPT_COL - RPT_RI)
+?? PADR(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju kolona
 ?? SPACE(RPT_GAP)
@@ -582,7 +584,7 @@ cPom := "Lica koja nisu reg PDV obveznici iz:"
 ?? SPACE(RPT_RI)
 // 42
 cPom := PADR("42. Uvoz ", RPT_W2) + TRANSFORM(u_pdv_uv, PIC_IZN())
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju dva reda -----------------------------------------
 show_raz_1()
@@ -591,14 +593,14 @@ show_raz_1()
 ?? SPACE(RPT_RI)
 cPom := PADR("32. Federacije BiH ", RPT_W2) + TRANSFORM(i_pdv_nr_1, PIC_IZN())
 // sirina kolone - indent
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju kolona
 ?? SPACE(RPT_GAP)
 
 ?? SPACE(RPT_RI)
 cPom := " "
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju dva reda -----------------------------------------
 show_raz_1()
@@ -607,14 +609,14 @@ show_raz_1()
 ?? SPACE(RPT_RI)
 cPom := PADR("33. Republike Srpske ", RPT_W2) + TRANSFORM(i_pdv_nr_2, PIC_IZN())
 // sirina kolone - indent
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju kolona
 ?? SPACE(RPT_GAP)
 
 ?? SPACE(RPT_RI)
 cPom := " "
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju dva reda -----------------------------------------
 show_raz_1()
@@ -623,14 +625,14 @@ show_raz_1()
 // 34
 cPom := PADR("34. Brcko Distrikta ", RPT_W2) + TRANSFORM(i_pdv_nr_3, PIC_IZN())
 // sirina kolone - indent
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju kolona
 ?? SPACE(RPT_GAP)
 
 ?? SPACE(RPT_RI)
 cPom := PADR("43. Preneseno iz predhodnog perioda ", RPT_W2) + TRANSFORM(u_pdv_pp, PIC_IZN())
-?? PADL(cPom, RPT_COL - RPT_RI)
+?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
 // razmak izmedju dva reda -----------------------------------------
 show_raz_1()
@@ -641,7 +643,7 @@ show_raz_1()
 cPom :=  PADR("51. Izlazni PDV - ukupno ", RPT_W2 - RPT_BOLD_DELTA ) + TRANSFORM(i_pdv_uk, PIC_IZN())
 // sirina kolone - indent
 B_ON
-?? PADL(cPom, RPT_COL - RPT_RI - RPT_BOLD_DELTA )
+?? PADL(cPom, RPT_COL - RPT_RI - RPT_BOLD_DELTA + 1 )
 B_OFF
 
 // razmak izmedju kolona
@@ -651,7 +653,7 @@ B_OFF
 // 61
 B_ON
 cPom := PADR("61. Ulazni PDV - ukupno ", RPT_W2 - RPT_BOLD_DELTA ) + TRANSFORM(u_pdv_uk, PIC_IZN())
-?? PADL(cPom, RPT_COL - RPT_RI - RPT_BOLD_DELTA)
+?? PADL(cPom, RPT_COL - RPT_RI - RPT_BOLD_DELTA + 1)
 B_OFF
 
 // razmak izmedju dva reda -----------------------------------------
@@ -664,7 +666,7 @@ show_raz_1()
 cPom := PADR("71. Obaveza PDV-a za uplatu ", RPT_W2 - RPT_BOLD_DELTA ) + TRANSFORM(pdv_uplatiti, PIC_IZN())
 // sirina kolone - indent
 B_ON
-?? PADL(cPom, RPT_COL - RPT_RI - RPT_BOLD_DELTA)
+?? PADL(cPom, RPT_COL - RPT_RI - RPT_BOLD_DELTA + 1)
 B_OFF
 
 // razmak izmedju kolona
@@ -674,7 +676,7 @@ B_OFF
 // 72
 cPom := PADR("72. Preplata ", RPT_W2 - RPT_BOLD_DELTA ) + TRANSFORM(pdv_preplata, PIC_IZN())
 B_ON
-?? PADL(cPom, RPT_COL - RPT_RI - RPT_BOLD_DELTA )
+?? PADL(cPom, RPT_COL - RPT_RI - RPT_BOLD_DELTA  + 1)
 B_OFF
 
 

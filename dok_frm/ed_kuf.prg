@@ -125,13 +125,13 @@ nX += 2
 
 nXPart := nX
 @ m_x + nX, m_y+2 SAY "Dobavljac: " GET _id_part ;
-	VALID  p_part(@_id_part) ;
+	VALID v_part(@_id_part, @_id_tar, "KUF", .t.) ;
 	PICT "@!"
 	
 nX += 2
 
 
-@ m_x + nX, m_y+2 SAY "Broj racuna (externi broj) " GET _src_br_2 
+@ m_x + nX, m_y+2 SAY "Broj fakture " GET _src_br_2 
 nX ++
 
 @ m_x + nX, m_y+2 SAY "Opis stavke: " GET _opis ;

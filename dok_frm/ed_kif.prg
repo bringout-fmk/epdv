@@ -125,7 +125,7 @@ nX += 2
 
 nXPart := nX
 @ m_x + nX, m_y+2 SAY "Kupac: " GET _id_part ;
-	VALID  p_part(@_id_part) ;
+	VALID v_part(@_id_part, @_id_tar, "KIF", .t.) ;
 	PICT "@!"
 	
 nX += 2
