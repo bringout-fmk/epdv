@@ -222,3 +222,113 @@ BoxC()
 MsgBeep("Izvrsen je povrat dokumenta " + STR( nBrDok, 6, 0) + " u pripremu" )
 
 return nBrDok
+
+
+// --------------------------------------
+// renumeracija rednih brojeva - priprema
+// --------------------------------------
+function renm_rbr(cTbl, lShow)
+
+if lShow == nil
+	lShow := .t.
+endif
+
+if cTbl == "P_KUF"
+	SELECT F_P_KUF
+	if !used()
+		O_P_KUF
+	endif
+	
+elseif cTbl == "P_KIF"
+	SELECT F_P_KIF
+	
+	SELECT F_P_KIF
+	if !used()
+		O_P_KIF
+	endif
+endif
+
+SET ORDER TO TAG "datum"
+// "datum" - "dtos(datum)+src_br_2"
+GO TOP
+nRbr := 1
+do while !eof()
+	replace r_br with nRbr
+	++nRbr
+	SKIP
+enddo
+
+if lShow
+	MsgBeep("Renumeracija izvrsena")
+endif
+
+return
+
+
+// --------------------------------------
+// renumeracija rednih brojeva - priprema
+// --------------------------------------
+function renm_g_rbr(cTbl, lShow)
+local nRbr
+local nLRbr
+
+if lShow == nil
+	lShow := .t.
+endif
+
+if cTbl == "KUF"
+	SELECT F_KUF
+	if !used()
+		O_KUF
+	endif
+	
+elseif cTbl == "P_KIF"
+	SELECT F_KIF
+	
+	SELECT F_KIF
+	if !used()
+		O_KIF
+	endif
+endif
+
+SET ORDER TO TAG "l_datum"
+// "l_datum" - "lock+tos(datum)+src_br_2"
+
+SET SOFTSEEK ON
+SEEK "DZ" 
+SKIP -1
+if lock == "D"
+	// postljednji zauzet broj
+	nLRbr := g_r_br
+else
+	nLRbr := 0
+endif
+
+PRIVATE cFilter := "!(lock == 'D')"
+
+// iskljuci lockovane slogove 
+SET FILTER TO &cFilter
+GO TOP
+
+Box(,3, 60)
+nRbr:= nLRbr
+do while !eof()
+
+ 	++nRbr
+	@ m_x+1, m_y+2 SAY cTbl + ":" + STR(nRbr, 8, 0)	
+	
+	replace g_r_br with nRbr
+	
+	++nRbr
+	SKIP
+enddo
+BoxC()
+
+USE
+
+if lShow
+	MsgBeep( cTbl + " : G.Rbr Renumeracija izvrsena")
+endif
+
+return
+

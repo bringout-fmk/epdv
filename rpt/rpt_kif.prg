@@ -4,6 +4,8 @@ static aHeader:={}
 static aZaglLen:={}
 static aZagl:={}
 
+static lSvakaHeader := .t.
+
 // tekuca linija reporta
 static nCurrLine:=0
 

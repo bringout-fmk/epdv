@@ -356,13 +356,13 @@ AADD(aDBf,{ "part_idbr" , "C" ,   13,  0 })
 // kategorija partnera
 // 1-pdv obveznik
 // 2-ne pdv obvezink
-AADD(aDBf,{ "part_kat"  , "C" ,   1,  0 })
+AADD(aDBf,{ "p_kat"  , "C" ,   1,  0 })
 
 // za ne-pdv obveznike
 //   1-federacija
 //   2-rs
 //   3-distrikt brcko
-AADD(aDBf,{ "part_kat_2" , "C" ,   13,  0 })
+AADD(aDBf,{ "p_kat_2" , "C" ,   1,  0 })
 
 
 // source dokument prodajno mjesto
@@ -477,7 +477,10 @@ AADD(aDBf,{ "part_idbr"      , "C" ,   13,  0 })
 // kategorija partnera
 // 1-pdv obveznik
 // 2-ne pdv obvezink
-AADD(aDBf,{ "part_kat"      , "C" ,   1,  0 })
+AADD(aDBf,{ "p_kat"      , "C" ,   1,  0 })
+
+// ne koristi se trenutno
+AADD(aDBf,{ "p_kat_2"      , "C" ,   1,  0 })
 
 
 AADD(aDBf,{ "src_td"      , "C" ,  12,  0 })
@@ -562,11 +565,11 @@ AADD(aDBf, { "id"      , "C" ,   4,  0 })
 AADD(aDBf, { "naz"      , "C" ,   60,  0 })
 
 
-// src
-// 1 - FIN 
-// 2 - KALK ...
+// src - pogledaj g_src_modul(cSrc)
 AADD(aDBf,{ "src"      , "C" ,   1,  0 })
 
+// tip dokumenta source-a 
+AADD(aDBf,{ "td_src"      , "C" ,   2,  0 })
 
 // source path kumulativ
 AADD(aDBf,{ "s_path"      , "C" ,   60,  0 })
@@ -575,6 +578,7 @@ AADD(aDBf,{ "s_path_s"      , "C" ,   60,  0 })
 
 // formula za izracunavanje osnovice - iznos b. pdv
 AADD(aDBf,{ "form_b_pdv"      , "C" ,   160,  0 })
+
 // formula za izracunavanje PDV-a
 AADD(aDBf,{ "form_pdv"      , "C" ,   160,  0 })
 
@@ -602,7 +606,19 @@ AADD(aDBf,{ "razb_dan"      , "C" ,   1,  0 })
 
 // kategorija partnera
 // shema se primjenjuje samo za odredjenu kategoriju partnera
-AADD(aDBf,{ "kat_part"      , "C" ,   1,  0 })
+AADD(aDBf,{ "kat_p"        , "C" ,   1,  0 })
+AADD(aDBf,{ "kat_p_2"      , "C" ,   1,  0 })
+
+// set id tarifa kod kuf/kif stavke
+AADD(aDBf,{ "s_id_tar"      , "C" ,   6,  0 })
+
+// setuj id partnera
+AADD(aDBf,{ "s_id_par"      , "C" ,   6,  0 })
+
+// aktivan 
+// D - da
+// N - ne
+AADD(aDBf,{ "aktivan"      , "C" ,   1,  0 })
 
 return aDbf
 
@@ -705,11 +721,13 @@ if (nArea==-1 .or. nArea == nArea2)
 
 	do case 
 		case (nArea2 == F_P_KUF)  .or. (nArea2 == F_P_KIF)
-		  CREATE_INDEX("datum","dtos(datum)", cPath + cTable)
+		  CREATE_INDEX("datum","dtos(datum)+src_br_2", cPath + cTable)
+		  CREATE_INDEX("l_datum","lock+dtos(datum)+src_br_2", cPath + cTable)
 		  CREATE_INDEX("br_dok", "STR(br_dok,6,0)+STR(r_br,6,0)", cPath + cTable)
 		 
 		case (nArea2 == F_KUF) .or. (nArea2 == F_KIF)
-		  CREATE_INDEX("datum","dtos(datum)", cPath + cTable)
+		  CREATE_INDEX("datum","dtos(datum)+src_br_2", cPath + cTable)
+		  CREATE_INDEX("l_datum","lock+dtos(datum)+src_br_2", cPath + cTable)
 		  CREATE_INDEX("g_r_br","STR(g_r_br,6,0)+dtos(datum)", cPath + cTable)
 		  CREATE_INDEX("BR_DOK","STR(BR_DOK, 6, 0)+STR(r_br,6,0)", cPath + cTable)
 		

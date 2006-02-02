@@ -4,6 +4,7 @@ static aHeader:={}
 static aZaglLen:={}
 
 static aZagl:={}
+static lSvakaHeader := .f.
 
 // datumski opseg
 static dDatOd 
