@@ -314,6 +314,9 @@ AADD(aDBf,{ "pot_datum" ,  "D" ,   8,  0 })
 // potpis obveznik pdv-a
 AADD(aDBf,{ "pot_ob" ,  "C" ,   80,  0 })
 
+// zakljucan obracun
+AADD(aDBf,{ "lock" ,  "C" ,   1,  0 })
+
 return aDbf
 
 
@@ -663,6 +666,8 @@ do case
 		nArea2 := F_SG_KIF
 	case cTable == "SG_KUF"
 		nArea2 := F_SG_KUF
+	case cTable == "PDV"
+		nArea2 := F_PDV
 endcase
 
 if (nArea==-1 .or. nArea == nArea2)

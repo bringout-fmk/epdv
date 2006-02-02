@@ -127,7 +127,51 @@ close
 return
 
 
+// ---------------------------------------------------------------
+// ---------------------------------------------------------------
+function read_pdv_pars(dPotDatum, cPotMjesto, cPotOb, cPdvPovrat)
 
+SELECT F_PARAMS
+
+if !used()
+	O_PARAMS
+endif
+
+private cSection:="9"
+private cHistory:=" "
+private aHistory:={}
+
+RPar("D1", @dPotDatum)
+RPar("C1", @cPotMjesto)
+RPar("C2", @cPotOb)
+RPar("C3", @cPdvPovrat)
+
+close
+
+return
+
+// ---------------------------------------------------------------
+// ---------------------------------------------------------------
+function save_pdv_pars(dPotDatum, cPotMjesto, cPotOb, cPdvPovrat)
+
+SELECT F_PARAMS
+
+if !used()
+	O_PARAMS
+endif
+
+private cSection:="9"
+private cHistory:=" "
+private aHistory:={}
+
+WPar("D1", dPotDatum)
+WPar("C1", cPotMjesto)
+WPar("C2", cPotOb)
+WPar("C3", cPdvPovrat)
+
+close
+
+return
 
 // SET - GET sekcija  za PIC i ZAO vrijednostai
 

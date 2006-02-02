@@ -45,8 +45,11 @@ return cPom
 
 // -----------------------------------------------
 // podaci o mojoj firmi ubaceni u partnera "10"
+
+//  lRetArray - .t. - vrati matricu
+//              .f. - vrati string, default
 // -----------------------------------------------
-function my_firma()
+function my_firma(lRetArray)
 local lNepopunjeno :=.f.
 local cNaziv
 local cMjesto
@@ -54,6 +57,10 @@ local cIdBroj
 local cPtt
 local cPom := gNFirma
 PushWa()
+
+if lRetArray == nil
+	lRetArray := .f.
+endif
 
 o_partn()
 
@@ -94,7 +101,12 @@ cPom := TRIM(cNaziv) + ", Id.br: " + cIdBroj + " , " + cPtt + " " + ALLTRIM(cMje
 cPom += " , " + ALLTRIM(cAdresa)
 
 PopWa()
-return cPom
+
+if lRetArray 
+	return { cNaziv, cIdBroj, cPtt, cMjesto, cAdresa }
+else
+	return cPom
+endif
 
 
 // --------------------------------

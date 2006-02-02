@@ -94,6 +94,9 @@ endif
 fill_rpt()
 show_rpt(  .f.,  .f.)
 
+
+save_pdv_obracun(dDatOd, dDatDo)
+
 return
 
 
@@ -139,11 +142,24 @@ return
 // -------------------------------------
 static function f_iz_kuf_kif()
 local nBPdv
+local nUkIzPdv := 0
+local nUkUlPdv := 0
 
 O_R_PDV
 APPEND BLANK
-// setuj mem vars
+
+aMyFirma := my_firma( .t. )
+
 Scatter()
+
+_po_naziv := aMyFirma[1]
+_id_br := aMyFirma[2]
+_po_ptt := aMyFirma[3]
+_po_mjesto := aMyFirma[4]
+_po_adresa := aMyFirma[5]
+
+
+// setuj mem vars
 
 PRIVATE cFilter := ""
 
@@ -188,6 +204,8 @@ endcase
 
 if ROUND( g_pdv_stopa(cIdTar), 2) > 0
 	// oporezivo, obracunat pdv
+
+	nUkUlPdv += nPdv
 
 	if IsIno(id_part)
 		// 42 - uvoz, na osnovu sifre partnera
@@ -265,6 +283,8 @@ if ROUND( g_pdv_stopa(cIdTar), 2) > 0
 
 	// oporezivo, obracunat pdv
 
+	nUkIzPdv += nPdv
+	
 	if IsPdvObveznik(id_part)
 
 		_i_pdv_r += nPdv
@@ -296,6 +316,57 @@ enddo
 
 // azuriram R_PDV za stavke KUF-a
 SELECT r_pdv
+
+UsTipke()
+
+	
+	read_pdv_pars(@_pot_datum, @_pot_mjesto, @_pot_ob, @_pdv_povrat)
+
+	// bez obzira na parametar ponudi danasnji datum
+	_pot_datum := DATE()
+	
+Box(,8, 65)
+	@ m_x + 1, m_y + 2 SAY "Prenos PDV iz predhodnog perioda (KM) ?" GET _u_pdv_pp ;
+	   PICT PIC_IZN()
+	   
+	@ m_x + 3, m_y + 2 SAY "- Potpis -----------------"
+	@ m_x + 4, m_y + 2 SAY "Datum :" GET _pot_datum ;
+		VALID { || _pot_mjesto := PADR(_po_mjesto, LEN(_pot_mjesto)), .t. }
+	@ m_x + 5, m_y + 2 SAY "Mjesto :" GET _pot_mjesto  ;
+		VALID { || _pot_datum := DATE(), .t. }
+	
+	@ m_x + 6, m_y + 2 SAY "Ime i prezime ? " GET _pot_ob ;
+		PICT "@S30" ;
+		
+	
+	@ m_x + 8, m_y + 2 SAY "Zahtjev za povrat ako je preplata (D/N) ? " GET _pdv_povrat ; 
+		VALID _pdv_povrat $ "DN" ;
+		PICT "@!"
+	
+	READ
+
+	save_pdv_pars(_pot_datum, _pot_mjesto, _pot_ob, _pdv_povrat)
+	
+BoxC()
+
+SELECT r_pdv
+
+_per_od := dDatOd
+_per_do := dDatDo
+
+_u_pdv_uk := nUkUlPdv + _u_pdv_pp
+_i_pdv_uk := nUkIzPdv 
+
+nPdvSaldo := _i_pdv_uk -  _u_pdv_uk 
+
+if nPdvSaldo > 0
+	_pdv_uplatiti := nPdvSaldo
+	_pdv_preplata := 0
+else
+	_pdv_preplata := -nPdvSaldo
+	_pdv_uplatiti := 0
+endif
+
 Gather()
 
 SELECT KIF
@@ -305,6 +376,7 @@ Beep(1)
 
 
 BoxC()
+
 
 return
 
@@ -400,11 +472,11 @@ show_raz_1()
 P_12CPI
 
 ?? rpt_lm()
-?? "1. Identifikacioni broj:" 
+?? "1. Identifikacioni broj : " 
 ?? id_br
 
 ?? SPACE(6)
-?? "2. Period"
+?? "2. Period : "
 ?? per_od 
 ?? " - " 
 ?? per_do
@@ -412,19 +484,19 @@ P_12CPI
 show_raz_1()
 
 ?? rpt_lm()
-?? "3. Naziv poreskog obveznika:"
+?? "3. Naziv poreskog obveznika : "
 ?? po_naziv
 
 show_raz_1()
 
 ?? rpt_lm()
-?? "4. Adresa " 
+?? "4. Adresa : " 
 ?? po_adresa
 
 show_raz_1()
 
 ?? rpt_lm()
-?? "5. Postanski broj/Mjesto "
+?? "5. Postanski broj/Mjesto : "
 ?? po_ptt
 ?? " / "
 ?? po_mjesto
@@ -704,7 +776,8 @@ show_raz_1()
 ?? "Mjesto : "
 U_ON
 
-?? pot_mjesto
+cPom := ALLTRIM(pot_mjesto)
+?? PADC( cPom , LEN(pot_mjesto))
 U_OFF
 
 ?? SPACE(35)
@@ -721,7 +794,8 @@ U_OFF
 
 ?? SPACE(50)
 U_ON
-?? PADR(pot_ob, 55)
+cPom:= ALLTRIM(pot_ob)
+?? PADC(cPom, 55)
 U_OFF
 
 show_raz_1()
@@ -790,3 +864,6 @@ return
 // ------------------------------------
 static function rpt_lm()
 return SPACE(RPT_LM)
+
+
+
