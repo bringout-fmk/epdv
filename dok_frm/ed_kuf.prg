@@ -58,6 +58,8 @@ private ImeKol
 private Kol
 
 SELECT (F_P_KUF)
+SET ORDER TO TAG "br_dok"
+GO TOP
 
 set_a_kol( @Kol, @ImeKol)
 ObjDbedit("ekuf", 20, 77, {|| k_handler()}, "", "KUF Priprema...", , , , , 3)

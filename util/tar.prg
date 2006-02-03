@@ -7,7 +7,7 @@
 */
 
 function s_tarifa(cIdTar)
-local cPom
+local cPom := ""
 
 PushWa()
 
@@ -23,7 +23,7 @@ seek cIdTar
 if !found()
 	cPom := "-NEP.TAR- ?!"
 else
-	cPom += ALLTRIM(naz) 
+	cPom := ALLTRIM(naz) 
 endif
 
 PopWa()

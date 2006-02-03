@@ -58,6 +58,8 @@ private ImeKol
 private Kol
 
 SELECT (F_P_KIF)
+SET ORDER TO TAG "br_dok"
+GO TOP
 
 set_a_kol( @Kol, @ImeKol)
 ObjDbedit("ekif", 20, 77, {|| k_handler()}, "", "KIF Priprema...", , , , , 3)
@@ -76,7 +78,7 @@ AADD(aImeKol, {"Br.dok", {|| TRANSFORM(br_dok, "99999")}, "r_br", {|| .t.}, {|| 
 AADD(aImeKol, {"R.br", {|| TRANSFORM(r_br, "99999")}, "r_br", {|| .t.}, {|| .t.} })
 
 AADD(aImeKol, {"Datum", {|| datum}, "datum", {|| .t.}, {|| .t.} })
-AADD(aImeKol, { PADR("Kupac", 15), {|| PADR(s_partner(id_part), 13) + ".." }, "opis", {|| .t.}, {|| .t.} })
+AADD(aImeKol, { PADR("Kupac", 19), {|| PADR(s_partner(id_part), 17) + ".." }, "opis", {|| .t.}, {|| .t.} })
 AADD(aImeKol, { PADR("Br.dob - Opis", 17), {|| PADR(ALLTRIM(src_br_2) + "-" + opis, 15) + ".." }, "", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"Izn.b.pdv", {|| TRANSFORM(i_b_pdv, PIC_IZN()) }, "i_b_pdv", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"Izn.pdv", {|| TRANSFORM(i_pdv, PIC_IZN()) }, "i_pdv", {|| .t.}, {|| .t.} })

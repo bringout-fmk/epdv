@@ -8,7 +8,7 @@
 
 static dDatOd
 static dDatDo
-static cFaktPath
+static cKalkPath
 static cSifPath
 static cTDSrc
 static nZaok
@@ -29,7 +29,7 @@ static cKatP
 static cKatP2
 
 
-function fakt_kif(dD1, dD2)
+function kalk_kif(dD1, dD2)
 *{
 local nCount
 local cIdfirma
@@ -61,7 +61,7 @@ do while !eof()
 	
 	@ m_x + 1, m_y+2 SAY "SG_KIF : " + STR(nCount)
 	
-	if g_src_modul(src) == "FAKT"
+	if g_src_modul(src) == "KALK"
 		
 		cTdSrc := td_src
 		
@@ -81,13 +81,14 @@ do while !eof()
 		PRIVATE cTarFormula := ""
 		PRIVATE cTarFilter := ""
 		
+		PRIVATE cKtoFormula := ""
+		PRIVATE cKtoFilter := ""
+	
 
 		if ";" $ id_tar 
-			// cDokTar je varijabla koja se dole setuje
-			// za tarifu dokumenta
-			cTarFilter := Parsiraj(id_tar, "cDokTar")
-
+			cTarFilter := Parsiraj(id_tar, "IdTarifa")
 			cTarFormula := ""
+			
 		elseif ( "(" $ id_tar ) .and. ( ")" $ id_tar )
 			// zadaje se formula
 			cTarFormula := id_tar
@@ -97,6 +98,19 @@ do while !eof()
 			cTarFormula := ""
 		endif
 		
+		if ";" $ id_kto
+			cKtoFilter := Parsiraj(id_kto, ALLTRIM(id_kto_naz))
+			cKtoFormula := ""
+			
+		elseif ( "(" $ id_kto ) .and. ( ")" $ id_kto )
+			// zadaje se formula
+			cKtoFormula := id_kto
+			cKtoFilter := ""
+		else
+			cKtoFilter := ""
+			cKtoFormula := ""
+		endif
+	
 		nZaok := zaok
 		nZaok2 := zaok2
 	
@@ -117,6 +131,7 @@ static function  gen_sg_item()
 local cPomPath
 local cPomSPath
 
+local cDokTar
 local xDummy
 local nCount
 local cPom
@@ -125,26 +140,25 @@ local lPdvObveznik
 local lIno
 
 local lSkip
-local lRet
 local nCijena
 
-// otvori fakt tabelu
+// otvori kalk tabelu
 // ------------------------------------------
 
 
-cPomPath :=  AddBs(ALLTRIM(sg_kif->s_path)) + "FAKT"
+cPomPath :=  AddBs(ALLTRIM(sg_kif->s_path)) + "KALK"
 cPomSPath :=  AddBs(ALLTRIM(sg_kif->s_path_s)) 
 
-select (F_FAKT)
-if cPomPath <> cFaktPath
-	cFaktPath := cPomPath
+select (F_KALK)
+if cPomPath <> cKalkPath
+	cKalkPath := cPomPath
 	if used()
 		use
 	endif
 	USE (cPomPath)
 else
 	if !used()
-		USE (cFaktPath)
+		USE (cKalkPath)
 	endif
 endif
 
@@ -191,13 +205,21 @@ endif
 
 
 	
-SELECT FAKT
+SELECT KALK
 PRIVATE cFilter := ""
 
 cFilter :=  cm2str(dDatOd) + " <= datdok .and. " + cm2str(dDatDo) + ">= datdok" 
 
 // setuj tip dokumenta
 cFilter :=  cFilter + ".and. IdTipDok == " + cm2str(cTdSrc)
+
+if !EMPTY(cTarFilter)
+	cFilter += ".and. " + cTarFilter
+endif
+
+if !EMPTY(cKtoFilter)
+	cFilter +=  ".and. " + cKtoFilter
+endif
 
 
 
@@ -207,7 +229,7 @@ SET FILTER TO &cFilter
 
 GO TOP
 
-// prosetajmo kroz fakt tabelu
+// prosetajmo kroz kalk tabelu
 nCount := 0
 do while !eof()
 
@@ -217,15 +239,15 @@ do while !eof()
 	Scatter()
 	// ----------------------------------------------
 	
-	SELECT fakt
+	SELECT kalk
 
-	cBrdok := fakt->brdok
-	cIdTipDok := fakt->idtipdok
-	cIdFirma := fakt->IdFirma
+	cBrdok := kalk->brdok
+	cIdTipDok := kalk->idvd
+	cIdFirma := kalk->IdFirma
 
 	// datum kif-a
-	_datum := fakt->datdok
-	_id_part := fakt->idpartner
+	_datum := kalk->datdok
+	_id_part := kalk->idpartner
 	_opis := cOpis
 
 	if !empty(cIdPart)
@@ -297,10 +319,10 @@ do while !eof()
 	
 	nCount ++
 
-	cPom := "FAKT : " + cIdFirma + "-" + cIdTipDok + "-" + cBrDok
+	cPom := "KALK : " + cIdFirma + "-" + cIdTipDok + "-" + cBrDok
 	@ m_x+3, m_y+2 SAY cPom 
 	
- 	cPom :="FAKT cnt : " + STR(nCount, 6)
+ 	cPom :="KALK cnt : " + STR(nCount, 6)
 	@ m_x+4, m_y+2 SAY cPom
 	
 	
@@ -312,9 +334,9 @@ do while !eof()
 	// tarifa koja se nalazi unutar dokumenta
 	cDokTar := ""
 	
-	SELECT FAKT
+	SELECT KALK
 	
-	do while !eof() .and. cBrDok == brdok .and. cIdTipDok == IdTipDok .and. cIdFirma == IdFirma
+	do while !eof() .and. cBrDok == brdok .and. cIdTipDok == IdVd .and. cIdFirma == IdFirma
 		if lSkip
 			SKIP
 			LOOP
@@ -322,43 +344,39 @@ do while !eof()
 
 		// pozicioniraj se na artikal u sifranriku robe
 		SELECT ROBA
-		seek fakt->idroba
-		SELECT FAKT
-		PUBLIC cDokTar := roba->idTarifa
-
-		if !EMPTY(cTarFilter)
-			altd()
-			lRet := &(cTarFilter)
-
-			if !lRet
-				SKIP
-				LOOP
-			endif
-		endif
+		seek kalk->idroba
+		SELECT KALK
+		cDokTar := roba->idTarifa
 		
-		_id_tar := cDokTar
+		_id_tar := kalk->idTarifa
 		
-		if !empty(cTarFormula)
-			// moze sadrzavati varijablu _id_tar
-			xDummy := &cTarFormula
-		endif
-	
-		if cTDSrc == "11"
-			nCijena := cijena / (1 + g_pdv_stopa(cDokTar)/100 )
+		
+		if cTDSrc $ "41#42"
+			nCijena := mpc
+			// u gornjoj cijeni je uracunat popust
+			nPopust := 0
+			
+		elseif cTdSrc $ "14#11"
+			nCijena := vpc
+			nPopust := rabatv
+			
 		else
-			nCijena := cijena
+			nCijena := vpc
+			nPopust := rabatv
 		endif
 
-		_uk_b_pdv += round( kolicina * (nCijena * (1 - rabat/100)) , nZaok)
-		_popust +=  round( kolicina * ( nCijena *  rabat/100 ) , nZaok)
 		
-		SELECT FAKT
+
+		_uk_b_pdv += round( kolicina * (nCijena * (1 - nPopust/100)) , nZaok)
+		_popust +=  round( kolicina * ( nCijena *  nPopust/100 ) , nZaok)
+		
+		SELECT KALK
 		skip
 	enddo
 
 	if lSkip
 		// vrati se gore
-		SELECT FAKT
+		SELECT KALK
 		LOOP
 	endif
 	
@@ -404,10 +422,8 @@ do while !eof()
 
 	f_part_f_src(cSifPath, _id_part)
 	
-	select fakt
+	select KALK
 enddo
 
 
-
 return
-

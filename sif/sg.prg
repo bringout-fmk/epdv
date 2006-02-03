@@ -64,8 +64,9 @@ AADD(aImeKol, {"Src.lok. sif", {|| s_path_s}, "s_path_s", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"For.B.PDV vr.", {|| form_b_pdv }, "form_b_pdv", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"For.PDV vr.", {|| form_pdv }, "form_pdv", {|| .t.}, {|| .t.} })
 
-AADD(aImeKol, {"Tarifa", {|| id_tar }, "id_tar", {|| .t.}, {|| .t.} })
-AADD(aImeKol, {"Konto", {|| id_kto }, "id_kto", {|| .t.}, {|| .t.} })
+AADD(aImeKol, {"Usl.tar.", {|| id_tar }, "id_tar", {|| .t.}, {|| .t.} })
+AADD(aImeKol, {"Usl.kto", {|| id_kto }, "id_kto", {|| .t.}, {|| .t.} })
+AADD(aImeKol, {"Kto.naz", {|| id_kto }, "id_kto_naz", {|| .t.}, {|| .t.} })
 
 AADD(aImeKol, {"Razb.tar.", {|| razb_tar }, "razb_tar", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"Razb.kto.", {|| razb_kto }, "razb_kto", {|| .t.}, {|| .t.} })
