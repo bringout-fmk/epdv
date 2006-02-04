@@ -10,6 +10,7 @@ static dDatOd
 static dDatDo
 static cKalkPath
 static cSifPath
+static cPm
 static cTDSrc
 static nZaok
 static nZaok2
@@ -33,13 +34,16 @@ static cKatP2
 // razbij po danima
 static cRazbDan
 
-function kalk_kif(dD1, dD2)
+function tops_kif(dD1, dD2)
 *{
 local nCount
 local cIdfirma
 
+altd()
+
 dDatOd := dD1
 dDatDo := dD2
+
 o_kif(.t.)
 
 SELECT F_SG_KIF
@@ -66,7 +70,7 @@ do while !eof()
 	
 	@ m_x + 1, m_y+2 SAY "SG_KIF : " + STR(nCount)
 	
-	if g_src_modul(src) == "KALK"
+	if g_src_modul(src) == "TOPS"
 		
 		cTdSrc := td_src
 		
@@ -81,6 +85,10 @@ do while !eof()
 	
 		cRazbDan := razb_dan
 
+		if !EMPTY(id_kto)
+			cPm := PADR(id_kto, 2)
+		endif
+
 		// setuj broj dokumenta
 		cSBRdok := s_br_dok
 
@@ -91,9 +99,6 @@ do while !eof()
 		PRIVATE cTarFormula := ""
 		PRIVATE cTarFilter := ""
 		
-		PRIVATE cKtoFormula := ""
-		PRIVATE cKtoFilter := ""
-	
 
 		if ";" $ id_tar 
 			cTarFilter := Parsiraj(id_tar, "IdTarifa")
@@ -108,18 +113,6 @@ do while !eof()
 			cTarFormula := ""
 		endif
 		
-		if ";" $ id_kto
-			cKtoFilter := Parsiraj(id_kto, ALLTRIM(id_kto_naz))
-			cKtoFormula := ""
-			
-		elseif ( "(" $ id_kto ) .and. ( ")" $ id_kto )
-			// zadaje se formula
-			cKtoFormula := id_kto
-			cKtoFilter := ""
-		else
-			cKtoFilter := ""
-			cKtoFormula := ""
-		endif
 	
 		nZaok := zaok
 		nZaok2 := zaok2
@@ -158,14 +151,16 @@ local dDMaxD
 local lSkip
 local nCijena
 
-// otvori kalk tabelu
+local cIdPos
+
+// otvori pos tabelu
 // ------------------------------------------
 
 
-cPomPath :=  AddBs(ALLTRIM(sg_kif->s_path)) + "KALK"
+cPomPath :=  AddBs(ALLTRIM(sg_kif->s_path)) + "POS"
 cPomSPath :=  AddBs(ALLTRIM(sg_kif->s_path_s)) 
 
-select (F_KALK)
+select (F_POS)
 if cPomPath <> cKalkPath
 	cKalkPath := cPomPath
 	if used()
@@ -181,13 +176,15 @@ endif
 if !(cPomSPath == cSifPath)
 
 	cSifPath := cPomSPath
-	
+
+	/*
 	SELECT F_PARTN
 	if used()
 		use
 	endif
 	USE (cSifPath + "PARTN")
 	SET ORDER TO TAG "ID"
+	*/
 	
 	SELECT F_ROBA
 	if used()
@@ -221,10 +218,11 @@ endif
 
 
 	
-SELECT KALK
+SELECT POS
 PRIVATE cFilter := ""
 
-cFilter :=  cm2str(dDatOd) + " <= datdok .and. " + cm2str(dDatDo) + ">= datdok" 
+
+cFilter :=  cm2str(dDatOd) + " <= datum .and. " + cm2str(dDatDo) + ">= datum" 
 
 // setuj tip dokumenta
 cFilter :=  cFilter + ".and. IdVD == " + cm2str(cTdSrc)
@@ -233,19 +231,19 @@ if !EMPTY(cTarFilter)
 	cFilter += ".and. " + cTarFilter
 endif
 
-if !EMPTY(cKtoFilter)
-	cFilter +=  ".and. " + cKtoFilter
+if !EMPTY(cPm)
+	cFilter +=  ".and. IdPos == " + cm2str(cPm)
 endif
 
 
 
-// "1","IdFirma+idtipdok+brdok+rbr+podbr"
+// "1", "IdPos+IdVd+dtos(datum)+BrDok+IdRoba+IdCijena"
 SET ORDER TO TAG "1"
 SET FILTER TO &cFilter
 
 GO TOP
 
-// prosetajmo kroz kalk tabelu
+// prosetajmo kroz pos tabelu
 nCount := 0
 do while !eof()
 
@@ -254,36 +252,38 @@ do while !eof()
 	SELECT p_kif
 	Scatter()
 	// ----------------------------------------------
-	
-	SELECT KALK
 
-	dDMin := datdok
-	dDMax := datdok
-	
+
+	SELECT POS
+	dDMin := datum
+	dDMax := datum
+
 	// ove var moraju biti private da bi se mogle macro-om evaluirati
 	PRIVATE _uk_b_pdv := 0
 	PRIVATE _popust := 0
+	
+	do while !eof() .and.  (datum == dDMax)
 
-	// datumski period
-	do while !eof() .and.  (datdok == dDMax)
+	SELECT pos
 
-	SELECT kalk
-
-	cBrdok := kalk->brdok
-	cIdTipDok := kalk->idvd
-	cIdFirma := kalk->IdFirma
+	cBrdok := pos->brdok
+	cIdTipDok := pos->idvd
+	cIdPos := pos->IdPos
 
 	// datum kif-a
-	_datum := kalk->datdok
-	_id_part := kalk->idpartner
+	_datum := pos->datum
+	_id_part := ""
 	_opis := cOpis
 
 	if !empty(cIdPart)
 		_id_part := cIdPart
 	endif
 
-	lIno := IsIno(_id_part)
-	lPdvObveznik := IsPdvObveznik(_id_part)
+	//lIno := IsIno(_id_part)
+	//lPdvObveznik := IsPdvObveznik(_id_part)
+	
+	lIno := .f.
+	lPdvObveznik := .f.
 	
 	lSkip := .f.
 	do case
@@ -318,8 +318,9 @@ do while !eof()
 
 	endcase
 
-	cPartRejon := part_rejon(_id_part)
+	//cPartRejon := part_rejon(_id_part)
 	
+	/*
 	do case
 	
 		case cKatP2 == "1"
@@ -340,7 +341,7 @@ do while !eof()
 				lSkip := .t.
 			endif
 	endcase
-		
+	*/	
 			
 	
 
@@ -348,75 +349,69 @@ do while !eof()
 	
 	nCount ++
 
-	cPom := "KALK : " + cIdFirma + "-" + cIdTipDok + "-" + cBrDok
+	cPom := "TOPS : " + cIdPos + "-" + cIdTipDok + "-" + cBrDok
 	@ m_x+3, m_y+2 SAY cPom 
 	
- 	cPom :="KALK cnt : " + STR(nCount, 6)
+ 	cPom :="TOPS cnt : " + STR(nCount, 6)
 	@ m_x+4, m_y+2 SAY cPom
+	
 	
 	
 	
 	// tarifa koja se nalazi unutar dokumenta
 	cDokTar := ""
 	
+	SELECT POS
+
 	
-	dDMinD := datdok
-	dDMaxD := datdok
+	dDMinD := datum
+	dDMaxD := datum
 	
-	do while !eof() .and. cBrDok == brdok .and. cIdTipDok == IdVd .and. cIdFirma == IdFirma
+	do while !eof() .and. cBrDok == brdok .and. cIdTipDok == IdVd .and. cIdPos == IdPos
 		if lSkip
 			SKIP
 			LOOP
 		endif
 
 		// na nivou dokumenta utvrdi min max datum
-		if dDMinD > datdok
-			dDMinD := datdok
+		if dDMinD > datum
+			dDMinD := datum
 		endif
 
-		if dDMaxD < datdok
-			dDMaxD := datdok
+		if dDMaxD < datum
+			dDMaxD := datum
 		endif
 		
 		// na nivou dat opsega utvrdi min max datum
-		if dDMin > datdok
-			dDMinD := datdok
+		if dDMin > datum
+			dDMinD := datum
 		endif
 
-		if dDMax < datdok
-			dDMax := datdok
+		if dDMax < datum
+			dDMax := datum
 		endif
 		
 
 		// pozicioniraj se na artikal u sifranriku robe
 		SELECT ROBA
-		seek kalk->idroba
-		SELECT KALK
-		cDokTar := roba->idTarifa
+		seek pos->idroba
+		SELECT POS
 		
-		_id_tar := kalk->idTarifa
+		cDokTar := pos->idTarifa
+		_id_tar := pos->idTarifa
 		
 		
-		if cTDSrc $ "41#42"
-			nCijena := mpc
-			// u gornjoj cijeni je uracunat popust
-			nPopust := 0
-			
-		elseif cTdSrc $ "14#11"
-			nCijena := vpc
-			nPopust := rabatv
-			
-		else
-			nCijena := vpc
-			nPopust := rabatv
-		endif
-
+		
+		nCijena := cijena / (1 + g_pdv_stopa(cDokTar)/100 )
+		// u posu se pohranjuje vrijednost u KM popusta
+		// u odnosu na cijenu
+		nCPopust := tops_popust()
 		
 
-		_uk_b_pdv += round( kolicina * (nCijena * (1 - nPopust/100)) , nZaok)
-		_popust +=  round( kolicina * ( nCijena *  nPopust/100 ) , nZaok)
+		_uk_b_pdv += round( kolicina * (nCijena - nCPopust) , nZaok)
+		_popust +=  round( kolicina * ( nCPopust ) , nZaok)
 		
-		SELECT KALK
+		SELECT POS
 		skip
 	enddo
 
@@ -424,7 +419,7 @@ do while !eof()
 	if (cRazbDan == "D")
 		// razbij po danima
 		if dDMinD <> dDMaxD
-			MsgBeep("U dokumentu " + cIdFirma + "-" + cIdTipDok + "-" + cBrDok + "  se nalaze datumi " + DTOC(dDMaxD) + "-" + DTOC(dDMaxD) + "##" + ;
+			MsgBeep("U dokumentu " + cIdPos + "-" + cIdTipDok + "-" + cBrDok + "  se nalaze datumi " + DTOC(dDMaxD) + "-" + DTOC(dDMaxD) + "##" + ;
 			"To nije uredu je se promet razbija po danima !!!")
 		endif
 		
@@ -445,7 +440,7 @@ do while !eof()
 	
 	if lSkip
 		// vrati se gore
-		SELECT KALK
+		SELECT POS
 		LOOP
 	endif
 	
@@ -497,10 +492,34 @@ do while !eof()
 	Gather()
 	
 
-	f_part_f_src(cSifPath, _id_part)
+	//f_part_f_src(cSifPath, _id_part)
 	
-	select KALK
+	select POS
 enddo
 
 
 return
+
+
+// ----------------------------------------
+// ----------------------------------------
+static function tops_popust()
+
+/*
+if right(odj->naz,5)=="#1#0#"
+     		nNeplaca+=Kolicina*Cijena - ncijena*Kolicina
+elseif right(odj->naz,6)=="#1#50#"
+     		nNeplaca+=Kolicina*Cijena/2 - ncijena
+endif
+*/
+
+/* ovo koristi samo vrijeme zenica za sada ovo necu rjesavati
+ if (gPopVar="P" .and. gClanPopust) 
+		if !EMPTY(cPartner)
+			nNeplaca+=kolicina*NCijena
+		endif
+ endif
+*/
+	
+return pos->NCijena
+	

@@ -16,7 +16,7 @@ local cPom := ""
 // 3 - FAKT
 // 4 - OS
 // 5 - SII
-
+// 6 - TOPS
 
 if lShow == nil
 	lShow := .f.
@@ -33,10 +33,13 @@ do case
 		cPom := "OS"
 	case cSrc == "5"
 		cPom := "SII"
+	case cSrc == "6"
+		cPom := "TOPS"
+
 	otherwise
 		if lShow
 			MsgBeep("odaberite: 1-FIN, 2-KALK,#" + ;
-			   "3-FAKT, 4-OS, 5-SII")
+			   "3-FAKT, 4-OS, 5-SII, 6-TOPS")
 		endif
 endcase
 

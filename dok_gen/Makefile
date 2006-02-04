@@ -5,7 +5,7 @@ include /sclib/Makefile_clipper
 
 SRCDOSROOT=c:\\dev\\fmk\\epdv\\dok_gen\\
 
-PRGS=m_gen.prg gen_kuf.prg gen_kif.prg g_fakt.prg g_kalk.prg
+PRGS=m_gen.prg gen_kuf.prg gen_kif.prg g_fakt.prg g_kalk.prg g_tops.prg
 
 CS=
 ASMS=

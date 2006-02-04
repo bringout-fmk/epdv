@@ -14,7 +14,7 @@ local dDatDo
 dDatOd := DATE()
 dDatDo := DATE()
 
-Box(, 3, 60)
+Box(, 3, 40)
 	@ m_x+1, m_y+2 SAY "Datum do " GET dDatOd 
 	@ m_x+2, m_y+2 SAY "      do " GET dDatDo
 	READ
@@ -42,8 +42,10 @@ endif
 
 Box(,5, 60)
 	fakt_kif(dDatOd, dDatDo)
-
+	
 	kalk_kif(dDatOd, dDatDo)
+	
+	tops_kif(dDatOd, dDatDo)
 
 	renm_rbr("P_KIF", .f.)
 BoxC()
