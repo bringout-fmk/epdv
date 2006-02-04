@@ -174,7 +174,11 @@ BoxC()
 
 ESC_RETURN .f.
 
-return .t.
+if cIspravno == "D"
+	return .t.
+else
+	return .f.
+endif
 *}
 
 

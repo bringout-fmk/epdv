@@ -2,21 +2,7 @@
 // -------------------------------
 // nabavke koje su oporezive
 // --------------------------------
-function t_isp_opor(cIdTar)
-return t_opor(cIdTar)
-
-// -------------------------------
-// nabavke koje su oporezive
-// --------------------------------
-function t_nab_opor(cIdTar)
-return t_opor(cIdTar)
-
-
-
-// -------------------------------
-// nabavke, isporuke koje su oporezive
-// --------------------------------
-function t_opor(cIdTar)
+function t_i_opor(cIdTar)
 local lRet
 
 cIdTar := PADR(cIdTar, 6)
@@ -30,14 +16,86 @@ lRet := lRet .or. (cIdTar == PADR("PDV7PO", 6) )
 // avansne nabavke
 lRet := lRet .or. (cIdTar == PADR("PDV7AV", 6) )
 
+// neposlovne svrhe
+lRet := lRet .or. (cIdTar == PADR("PDV7NP", 6) )
+
 return lRet
 
 
 
 // -------------------------------
+// nabavke oporezive,
+// priznat ulazni porez, osim pausalne naknade poljoprivrednicima
+// -------------------------------
+function t_u_poup(cIdTar)
+local lRet
+
+cIdTar := PADR(cIdTar, 6)
+
+lRet := .f.
+
+// standardne nabavke
+lRet := lRet .or. (cIdTar == PADR("PDV17", 6) )
+// avansne nabavke
+lRet := lRet .or. (cIdTar == PADR("PDV7AV", 6) )
+
+return lRet
+
+// -------------------------------
+// nabavke oporezive,
+// pausalne naknade poljoprivrednicima
+// -------------------------------
+function t_u_polj(cIdTar)
+local lRet
+
+cIdTar := PADR(cIdTar, 6)
+
+lRet := .f.
+
+// nabavka poljoprivreda - oporezivo
+lRet := lRet .or. (cIdTar == PADR("PDV7PO", 6) )
+
+return lRet
+
+// -------------------------------
+// nabavke neoporezive,
+// neoporezivi dio nabavke od poljprovrednika
+// -------------------------------
+function t_u_polj_0(cIdTar)
+local lRet
+
+cIdTar := PADR(cIdTar, 6)
+
+lRet := .f.
+
+// nabavka poljoprivreda - oporezivo
+lRet := lRet .or. (cIdTar == PADR("PDV0PO", 6) )
+
+return lRet
+
+
+
+// -------------------------------
+// nabavke ne prizna je se ulazni porez
+// --------------------------------
+function t_u_n_poup(cIdTar)
+local lRet
+
+cIdTar := PADR(cIdTar, 6)
+
+lRet := .f.
+
+// standardne nabavke
+// nabavka poljoprivreda - oporezivo
+lRet := lRet .or. (cIdTar == PADR("PDV7NP", 6) )
+
+return lRet
+
+
+// -------------------------------
 // nabavke uvoz
 // --------------------------------
-function t_nab_uvoz(cIdTar)
+function t_u_uvoz(cIdTar)
 local lRet
 
 cIdTar := PADR(cIdTar, 6)
@@ -47,10 +105,10 @@ lRet := lRet .or. (cIdTar == PADR("PDV7UV",6) )
 
 return lRet
 
-// -------------------------------
-// nabavke neoporezivo
-// --------------------------------
-function t_nab_ne_opor(cIdTar)
+// ------------------------------------------
+// nabavke neoporezivo - ne pdv obveznici
+// ------------------------------------------
+function t_u_neop(cIdTar)
 local lRet
 
 cIdTar := PADR(cIdTar, 6)
@@ -58,41 +116,26 @@ cIdTar := PADR(cIdTar, 6)
 lRet := .f.
 lRet := lRet .or. (cIdTar == PADR("PDV0", 6) )
 lRet := lRet .or. (cIdTar == PADR("PDV0UV", 6) )
-lRet := lRet .or. (cIdTar == PADR("PDV0PO", 6) )
-
 return lRet
 
 // -------------------------------
-// isporuke neoporezivo
+// isporuke neoporezivo, osim izvoza
 // --------------------------------
-function t_isp_neopor(cIdTar)
+function t_i_neop(cIdTar)
 local lRet
 
 cIdTar := PADR(cIdTar, 6)
 
 lRet := .f.
 lRet := lRet .or. (cIdTar == PADR("PDV0",6) )
-lRet := lRet .or. (cIdTar == PADR("PDV0IZ",6) )
-lRet := lRet .or. (cIdTar == PADR("PDV0PO",6) )
 
 return lRet
 
-// -------------------------------
-// isporuke nenposlovne svrhe
-// --------------------------------
-function t_isp_nep_svr(cIdTar)
-local lRet
-
-cIdTar := PADR(cIdTar, 6)
-
-lRet := .f.
-lRet := lRet .or. (cIdTar == PADR("PDV7NP", 6) )
-return lRet
 
 // -------------------------------
 // isporuke izvoz
 // --------------------------------
-function t_isp_izv(cIdTar)
+function t_i_izvoz(cIdTar)
 local lRet
 
 cIdTar := PADR(cIdTar, 6)
@@ -101,19 +144,5 @@ lRet := .f.
 lRet := lRet .or. (cIdTar == PADR("PDV0IZ", 6) )
 return lRet
 
-
-// -------------------------------
-// nabavke stalna sredstva
-// --------------------------------
-function t_nab_st_sr(cIdTar)
-local lRet
-
-cIdTar := PADR(cIdTar, 6)
-
-lRet := .f.
-lRet := lRet .or. (cIdTar == PADR("PDV7SS", 6) )
-lRet := lRet .or. (cIdTar == PADR("PDV7SU", 6) )
-
-return lRet
 
 

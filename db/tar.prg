@@ -40,17 +40,6 @@ if !found()
 endif
 
 
-// nabavka od ne-pdv obvenznika
-cPom:=PADR("PDV0N" ,6)
-seek cPom
-if !found()
-	append blank
-	replace id with cPom
-	replace naz with "NEPDV OBVEZNICI, PDV 0%, NAB"
-	replace opp with 0
-endif
-
-
 // nabavka od poljoprivrednika oporezivi dio 5%
 cPom:=PADR("PDV7PO" ,6)
 seek cPom
@@ -84,30 +73,7 @@ if !found()
 endif
 
 
-// stalna sredstva, oporezivo
-cPom:=PADR("PDV7SS" ,6)
-seek cPom
-if !found()
-	append blank
-	replace id with cPom
-	replace naz with "STALNA SREDSTVA, PDV 17"
-	replace opp with 17
-endif
-
-// stalna sredstva, oporezivo
-cPom:=PADR("PDV7SU" ,6)
-seek cPom
-if !found()
-	append blank
-	replace id with cPom
-	replace naz with "STALNA SREDSTVA, UVOZ, PDV 17"
-	replace opp with 17
-endif
-
-
-
-
-// uvoz  neoporezivo
+// uvoz neoporezivo
 cPom:=PADR("PDV0UV" ,6)
 seek cPom
 if !found()
@@ -118,23 +84,14 @@ if !found()
 endif
 
 
-// nabavka neposlovne svrhe - ne priznaje se izl porez
-cPom:=PADR("PDV0NP" ,6)
-seek cPom
-if !found()
-	append blank
-	replace id with cPom
-	replace naz with "NEPOSLOVNE SVRHE, NAB.UL.PDV = 0"
-	replace opp with 0
-endif
-
+// nabavka neposlovne svrhe - ne priznaje se ul. porez kao odbitak
 // isporuka neposlovne svrhe - izl. pdv standardno
 cPom:=PADR("PDV7NP" ,6)
 seek cPom
 if !found()
 	append blank
 	replace id with cPom
-	replace naz with "NEPOSLOVNE SVRHE, ISP. IZL.PDV = 17"
+	replace naz with "NEPOSLOVNE SVRHE, NAB/ISP"
 	replace opp with 17
 endif
 

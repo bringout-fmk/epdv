@@ -253,25 +253,25 @@ AADD(aDBf,{ "po_ptt"      , "C" ,   10 ,  0 })
 AADD(aDBf,{ "po_mjesto"      , "C" ,   40 ,  0 })
 
 // 11 - oporezive isporuke
-AADD(aDBf,{ "isp_opor"      , "N" ,   18 ,  2 })
+AADD(aDBf,{ "i_opor"      , "N" ,   18 ,  2 })
 // 12 - isporuke izvoz
-AADD(aDBf,{ "isp_izv"      , "N" ,   18 ,  2 })
+AADD(aDBf,{ "i_izvoz"      , "N" ,   18 ,  2 })
 // 13 - ostale neoporezive isporuke
-AADD(aDBf,{ "isp_neopor"    , "N" ,   18 ,  2 })
-// 14 - neposlovne svrhe upotreba
-AADD(aDBf,{ "isp_nep_svr"    , "N" ,   18 ,  2 })
+AADD(aDBf,{ "i_neop"    , "N" ,   18 ,  2 })
 
-// 21 - oporezive nabavke
-AADD(aDBf,{ "nab_opor"    , "N" ,   18 ,  2 })
+// 21 - sve nabavke osim uvoza i poljoprivrede
+AADD(aDBf,{ "u_nab_21"    , "N" ,   18 ,  2 })
+
 // 22  - uvoz
-AADD(aDBf,{ "nab_uvoz"    , "N" ,   18 ,  2 })
-// 23 - nabavke oslobodjene pdv
-AADD(aDBf,{ "nab_ne_opor" , "N" ,   18 ,  2 })
-// 24 - nabavka stalnih sredstava
-AADD(aDBf,{ "nab_st_sr" , "N" ,   18 ,  2 })
+AADD(aDBf,{ "u_uvoz"    , "N" ,   18 ,  2 })
+
+// 21 - nabavke od poljoprivrednika
+AADD(aDBf,{ "u_nab_23"    , "N" ,   18 ,  2 })
+
 
 // 31 - pdv za registrovane pdv obveznike
 AADD(aDBf,{ "i_pdv_r" , "N" ,   18 ,  2 })
+
 // 32 - pdv za neregistovane, federacija
 AADD(aDBf,{ "i_pdv_nr_1" , "N" ,   18 ,  2 })
 // 33 - rs
@@ -282,24 +282,29 @@ AADD(aDBf,{ "i_pdv_nr_3" , "N" ,   18 ,  2 })
 AADD(aDBf,{ "i_pdv_nr_4" , "N" ,   18 ,  2 })
 
 
-// 41 - ulazni pdv, registrovani obveznici
-AADD(aDBf,{ "u_pdv_r" , "N" ,   18 ,  2 })
+// 41 - ulazni pdv, sve osim uvoza i poljoprivrednika
+AADD(aDBf,{ "u_pdv_41" , "N" ,   18 ,  2 })
+
 // 42 - uvoz
 AADD(aDBf,{ "u_pdv_uv" , "N" ,   18 ,  2 })
 
-// 43 - preneseno iz predhodnog perioda
+// 43 -  pausalna naknada za poljoprivrednike, oporezivi dio pdv
+AADD(aDBf,{ "u_pdv_43" , "N" ,   18 ,  2 })
+
+
+// preneseno iz predhodnog perioda
 AADD(aDBf,{ "u_pdv_pp" , "N" ,   18 ,  2 })
 
 // 51 izlazni pdv ukupno
 AADD(aDBf,{ "i_pdv_uk" , "N" ,   18 ,  2 })
 
-// 61
+// 61 = u_pdv_pp + u_pdv_41 + u_pdv_uv + u_pdv_43
 AADD(aDBf,{ "u_pdv_uk" , "N" ,   18 ,  2 })
 
+
 // 71 obaveza za uplatu, ako ima
+// moze biti + (uplatiti) ili - (povrat)
 AADD(aDBf,{ "pdv_uplatiti" , "N" ,   18 ,  2 })
-// 72 preplaceno pdv-a ako jeste
-AADD(aDBf,{ "pdv_preplata" , "N" ,   18 ,  2 })
 
 // 80 zahtjev za povrat
 //  D - da

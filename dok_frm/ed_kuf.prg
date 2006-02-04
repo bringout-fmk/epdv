@@ -163,7 +163,6 @@ nX += 2
 nX += 2
 
 @ m_x + nX, m_y+2 SAY "Ispravno ?" GET cIspravno ;
-	valid { || cIspravno == "D" } ;
 	pict "@!"
 ++nX
 
@@ -174,7 +173,11 @@ BoxC()
 
 ESC_RETURN .f.
 
-return .t.
+if cIspravno == "D"
+	return .t.
+else
+	return .f.
+endif
 *}
 
 
