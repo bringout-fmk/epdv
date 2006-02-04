@@ -623,6 +623,10 @@ AADD(aDBf,{ "s_id_tar"      , "C" ,   6,  0 })
 // setuj id partnera
 AADD(aDBf,{ "s_id_par"      , "C" ,   6,  0 })
 
+// setuj broj dokuumenta
+AADD(aDBf,{ "s_br_dok"      , "C" ,   12,  0 })
+
+
 // aktivan 
 // D - da
 // N - ne

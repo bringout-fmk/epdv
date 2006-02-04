@@ -764,7 +764,13 @@ U_ON
 U_OFF
 B_OFF
 
-// razmak izmedju dva reda -----------------------------------------
+show_raz_1()
+?? rpt_lm()
+?? SPACE(RPT_RI)
+cPom := "PDV isporuke licima koji nisu reg. PDV obveznici u:"
+// sirina kolone - indent
+?? cPom
+
 show_raz_1()
 
 ?? rpt_lm()

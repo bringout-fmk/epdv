@@ -42,6 +42,7 @@ endif
 
 Box(,5, 60)
 	fakt_kif(dDatOd, dDatDo)
+
 	kalk_kif(dDatOd, dDatDo)
 
 	renm_rbr("P_KIF", .f.)

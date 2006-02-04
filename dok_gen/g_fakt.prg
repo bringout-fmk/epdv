@@ -49,6 +49,7 @@ if !used()
 endif
 
 SELECT sg_kif
+GO TOP
 nCount := 0
 do while !eof()
 

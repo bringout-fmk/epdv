@@ -15,6 +15,8 @@ static nZaok
 static nZaok2
 static cIdTar
 static cIdPart
+// setuj broj dokumenta
+static cSBRdok 
 static cOpis
 
 // kategorija partnera
@@ -28,6 +30,8 @@ static cKatP
 // 3-bd
 static cKatP2
 
+// razbij po danima
+static cRazbDan
 
 function kalk_kif(dD1, dD2)
 *{
@@ -49,6 +53,7 @@ if !used()
 endif
 
 SELECT sg_kif
+GO TOP
 nCount := 0
 do while !eof()
 
@@ -73,7 +78,12 @@ do while !eof()
 		cKatP2 := kat_p_2
 	
 		cOpis := naz
-		
+	
+		cRazbDan := razb_dan
+
+		// setuj broj dokumenta
+		cSBRdok := s_br_dok
+
 		PRIVATE cFormBPdv := form_b_pdv
 		PRIVATE cFormPdv := form_pdv
 
@@ -138,6 +148,12 @@ local cPom
 local cPartRejon
 local lPdvObveznik
 local lIno
+local dDMin
+local dDMax
+
+// za jedan dokument
+local dDMinD
+local dDMaxD
 
 local lSkip
 local nCijena
@@ -211,7 +227,7 @@ PRIVATE cFilter := ""
 cFilter :=  cm2str(dDatOd) + " <= datdok .and. " + cm2str(dDatDo) + ">= datdok" 
 
 // setuj tip dokumenta
-cFilter :=  cFilter + ".and. IdTipDok == " + cm2str(cTdSrc)
+cFilter :=  cFilter + ".and. IdVD == " + cm2str(cTdSrc)
 
 if !EMPTY(cTarFilter)
 	cFilter += ".and. " + cTarFilter
@@ -293,6 +309,7 @@ do while !eof()
 	cPartRejon := part_rejon(_id_part)
 	
 	do case
+	
 		case cKatP2 == "1"
 			// samo federacija
 			if !((cPartRejon == " ") .or. (cPartRejon == "1"))
@@ -335,12 +352,39 @@ do while !eof()
 	cDokTar := ""
 	
 	SELECT KALK
+
+	dDMin := datdok
+	dDMax := datdok
+
+	do while !eof() .and.  (datdok == dDMax)
+	
+	dDMinD := datdok
+	dDMaxD := datdok
 	
 	do while !eof() .and. cBrDok == brdok .and. cIdTipDok == IdVd .and. cIdFirma == IdFirma
 		if lSkip
 			SKIP
 			LOOP
 		endif
+
+		// na nivou dokumenta utvrdi min max datum
+		if dDMinD > datdok
+			dDMinD := datdok
+		endif
+
+		if dDMaxD < datdok
+			dDMaxD := datdok
+		endif
+		
+		// na nivou dat opsega utvrdi min max datum
+		if dDMin > datdok
+			dDMinD := datdok
+		endif
+
+		if dDMax < datdok
+			dDMax := datdok
+		endif
+		
 
 		// pozicioniraj se na artikal u sifranriku robe
 		SELECT ROBA
@@ -374,15 +418,35 @@ do while !eof()
 		skip
 	enddo
 
+	
+	if (cRazbDan == "D")
+		// razbij po danima
+		if dDMinD <> dDMaxD
+			MsgBeep("U dokumentu " + cIdFirma + "-" + cIdTipDok + "-" + cBrDok + "  se nalaze datumi " + DTOC(dDMaxD) + "-" + DTOC(dDMaxD) + "##" + ;
+			"To nije uredu je se promet razbija po danima !!!")
+		endif
+		
+	endif
+
+	if cRazbDan <> "D"
+		// nije po danima
+		// za jedan dokument se uzima 
+		exit
+		// ako pak jeste "D" onda se vrti u petlji
+	endif
+
+	// datumski interval
+	enddo
+
+	// za datum uzmi datum dokumenta ili najveci datum gore pronadjen
+	_datum := dDMax
+	
 	if lSkip
 		// vrati se gore
 		SELECT KALK
 		LOOP
 	endif
 	
-	// broj dokumenta
-	_src_br := cBrDok
-	_src_br_2 := cBrDok
 	
 	_uk_b_pdv := round(_uk_b_pdv, nZaok2)
 	_uk_popust := round(_popust, nZaok2)
@@ -394,6 +458,17 @@ do while !eof()
 		// uzmi iz dokumenta
 		_id_tar := cDokTar
 	endif
+
+	if !EMPTY(cSBrDok)
+		_src_br := cSBrDok
+		_src_br_2 := cSBrDok
+	else
+	
+		// broj dokumenta
+		_src_br := cBrDok
+		_src_br_2 := cBrDok
+	endif
+	
 
 	
 	PRIVATE _uk_pdv :=  _uk_b_pdv * (  g_pdv_stopa(_id_tar) / 100 )

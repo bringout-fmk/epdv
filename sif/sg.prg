@@ -82,6 +82,9 @@ AADD(aImeKol, {"Set.Tar", {|| s_id_tar }, "s_id_tar", {|| .t.}, {|| .t.} })
 // setuj id tar u kuf/kif
 AADD(aImeKol, {"Set.Par", {|| s_id_part }, "s_id_part", {|| .t.}, {|| .t.} })
 
+// setuj id tar u kuf/kif
+AADD(aImeKol, {"Set.Br.Dok", {|| s_br_dok }, "s_br_dok", {|| .t.}, {|| .t.} })
+
 AADD(aImeKol, {"Aktivan", {|| aktivan }, "aktivan", {|| waktivan := iif(waktivan == " ", "D", waktivan) , .t.}, {|| .t.} })
 
 aKol:={}
