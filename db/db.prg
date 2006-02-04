@@ -273,13 +273,13 @@ AADD(aDBf,{ "u_nab_23"    , "N" ,   18 ,  2 })
 AADD(aDBf,{ "i_pdv_r" , "N" ,   18 ,  2 })
 
 // 32 - pdv za neregistovane, federacija
-AADD(aDBf,{ "i_pdv_nr_1" , "N" ,   18 ,  2 })
+AADD(aDBf,{ "i_pdv_nr1" , "N" ,   18 ,  2 })
 // 33 - rs
-AADD(aDBf,{ "i_pdv_nr_2" , "N" ,   18 ,  2 })
+AADD(aDBf,{ "i_pdv_nr2" , "N" ,   18 ,  2 })
 // 34 - bdistrikt
-AADD(aDBf,{ "i_pdv_nr_3" , "N" ,   18 ,  2 })
+AADD(aDBf,{ "i_pdv_nr3" , "N" ,   18 ,  2 })
 // ne koristi se
-AADD(aDBf,{ "i_pdv_nr_4" , "N" ,   18 ,  2 })
+AADD(aDBf,{ "i_pdv_nr4" , "N" ,   18 ,  2 })
 
 
 // 41 - ulazni pdv, sve osim uvoza i poljoprivrednika

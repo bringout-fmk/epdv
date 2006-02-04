@@ -10,6 +10,8 @@
 static gZAO_IZN
 // zaokruzenje cijena
 static gZAO_CIJ
+// zaokruzenje cijena
+static gZAO_PDV
 
 // picture iznos
 static gPIC_IZN
@@ -48,20 +50,24 @@ Box(, 15, 70)
  @ m_x + nX, m_y+2 SAY "1. Zaokruzenje ***"
  nX++
  
- @ m_x + nX , m_y+2 SAY " iznos  "   GET gZAO_IZN PICT "9"
+ @ m_x + nX , m_y+2 SAY PADL("iznos ", 30)   GET gZAO_IZN PICT "9"
  nX++
  
- @ m_x + nX, m_y+2 SAY " cijena "   GET gZAO_CIJ PICT "9"
+ @ m_x + nX, m_y+2 SAY PADL("cijena ", 30)   GET gZAO_CIJ PICT "9"
+ nX += 2
+ 
+ @ m_x + nX, m_y+2 SAY PADL(" podaci na pdv prijavi ", 30)   GET gZAO_PDV PICT "9"
  nX += 2
 
  @ m_x + nX, m_y+2 SAY "2. Prikaz ***"
  nX ++
  
- @ m_x + nX, m_y+2 SAY " iznos  "   GET gPIC_IZN
+ @ m_x + nX, m_y+2 SAY PADL(" iznos ", 30)   GET gPIC_IZN
  nX ++
  
- @ m_x + nX, m_y+2 SAY " cijena "   GET gPIC_CIJ
+ @ m_x + nX, m_y+2 SAY PADL(" cijena ", 30)   GET gPIC_CIJ
  nX ++
+
 
  READ
 
@@ -84,6 +90,7 @@ function read_g_params()
 *{
 gZAO_IZN := 2
 gZAO_CIJ := 3
+gZAO_PDV := 0
 gPIC_IZN := "9999999.99"
 gPIC_CIJ := "9999999.99"
 
@@ -98,6 +105,8 @@ private aHistory:={}
 
 RPar("Z1", @gZAO_IZN)
 RPar("Z2", @gZAO_CIJ)
+RPar("Z3", @gZAO_PDV)
+
 RPar("P1", @gPIC_IZN)
 RPar("P2", @gPIC_CIJ)
 
@@ -119,6 +128,8 @@ private aHistory:={}
 
 WPar("Z1", gZAO_IZN)
 WPar("Z2", gZAO_CIJ)
+WPar("Z3", gZAO_PDV)
+
 WPar("P1", gPIC_IZN)
 WPar("P2", gPIC_CIJ)
 
@@ -194,6 +205,17 @@ if xVal <> nil
 endif
 
 return gZAO_CIJ
+
+// -------------------------------
+// -------------------------------
+function ZAO_PDV(xVal)
+
+if xVal <> nil
+	gZAO_PDV := xVal
+endif
+
+return gZAO_PDV
+
 
 // -------------------------------
 // -------------------------------

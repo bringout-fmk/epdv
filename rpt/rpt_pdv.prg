@@ -300,14 +300,20 @@ if ROUND( g_pdv_stopa(cIdTar), 2) > 0
 		do case
 			case cRejon == "2"
 				// rs
-				_i_pdv_nr_2 += nPdv
+				_i_pdv_nr2 += nPdv
 			
 			case cRejon == "3"
 				// bd
-				_i_pdv_nr_3 += nPdv
+				_i_pdv_nr3 += nPdv
+			
+			case cRejon == "4"
+				// bd
+				_i_pdv_nr4 += nPdv
+				
+			
 			otherwise
 				// federacija
-				_i_pdv_nr_1 += nPdv
+				_i_pdv_nr1 += nPdv
 		endcase
 	endif
 				
@@ -373,6 +379,8 @@ nPdvSaldo := _i_pdv_uk -  _u_pdv_uk
 
 _pdv_uplatiti := nPdvSaldo
 
+zaok_p_pdv()
+
 Gather()
 
 SELECT KIF
@@ -386,6 +394,38 @@ BoxC()
 
 return
 
+// ------------------------------------
+// ------------------------------------
+static function zaok_p_pdv()
+
+_u_nab_21 := ROUND(_u_nab_21, ZAO_PDV())
+_u_uvoz := ROUND(_u_uvoz, ZAO_PDV())
+_u_nab_23 := ROUND(_u_nab_23, ZAO_PDV())
+
+
+_u_pdv_41 := ROUND(_u_pdv_41, ZAO_PDV())
+_u_pdv_uv := ROUND(_u_pdv_uv, ZAO_PDV())
+_u_pdv_43 := ROUND(_u_pdv_43, ZAO_PDV())
+
+
+_i_opor := ROUND(_i_opor, ZAO_PDV())
+_i_izvoz := ROUND(_i_izvoz, ZAO_PDV())
+_i_neop := ROUND(_i_neop, ZAO_PDV())
+
+
+_i_pdv_r := ROUND(_i_pdv_r, ZAO_PDV())
+
+_i_pdv_nr1 := ROUND(_i_pdv_nr1, ZAO_PDV())
+_i_pdv_nr2 := ROUND(_i_pdv_nr2, ZAO_PDV())
+_i_pdv_nr3 := ROUND(_i_pdv_nr3, ZAO_PDV())
+_i_pdv_nr4 := ROUND(_i_pdv_nr4, ZAO_PDV())
+
+_u_pdv_uk := ROUND(_u_pdv_uk, ZAO_PDV()) 
+_i_pdv_uk := ROUND(_i_pdv_uk, ZAO_PDV()) 
+_pdv_uplatiti := ROUND(_pdv_uplatiti, ZAO_PDV()) 
+
+
+return
 
 // ------------------------------------
 // ------------------------------------
@@ -705,7 +745,7 @@ B_OFF
 
 ?? SPACE(RPT_RI)
 // 72
-cPom := PADR("80. Zahtjev za povrat ", RPT_W2 - RPT_BOLD_DELTA ) + " <" +iif(pdv_povrat == "D", "X", " ") + ">" 
+cPom := PADR("80. Zahtjev za povrat ", RPT_W2 - RPT_BOLD_DELTA - 5 ) + " <" +iif(pdv_povrat == "D", "X", " ") + ">" 
 B_ON
 ?? PADL(cPom, RPT_COL - RPT_RI - RPT_BOLD_DELTA  + 1)
 B_OFF
@@ -720,7 +760,7 @@ show_raz_1()
 
 B_ON
 U_ON
-?? PADR("III. STATISTICKI PODACO", RPT_COL - RPT_BOLD_DELTA )
+?? PADR("III. STATISTICKI PODACI", RPT_COL - RPT_BOLD_DELTA )
 U_OFF
 B_OFF
 
@@ -729,7 +769,7 @@ show_raz_1()
 
 ?? rpt_lm()
 ?? SPACE(RPT_RI)
-cPom := PADR("32. Federacije BiH ", RPT_W2) + TRANSFORM(i_pdv_nr_1, PIC_IZN())
+cPom := PADR("32. Federacije BiH ", RPT_W2) + TRANSFORM(i_pdv_nr1, PIC_IZN())
 // sirina kolone - indent
 ?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
@@ -739,7 +779,7 @@ show_raz_1()
 
 ?? rpt_lm()
 ?? SPACE(RPT_RI)
-cPom := PADR("33. Republike Srpske ", RPT_W2) + TRANSFORM(i_pdv_nr_2, PIC_IZN())
+cPom := PADR("33. Republike Srpske ", RPT_W2) + TRANSFORM(i_pdv_nr2, PIC_IZN())
 // sirina kolone - indent
 ?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
@@ -749,7 +789,7 @@ show_raz_1()
 ?? rpt_lm()
 ?? SPACE(RPT_RI)
 // 34
-cPom := PADR("34. Brcko Distrikta ", RPT_W2) + TRANSFORM(i_pdv_nr_3, PIC_IZN())
+cPom := PADR("34. Brcko Distrikta ", RPT_W2) + TRANSFORM(i_pdv_nr3, PIC_IZN())
 // sirina kolone - indent
 ?? PADL(cPom, RPT_COL - RPT_RI + 1)
 
