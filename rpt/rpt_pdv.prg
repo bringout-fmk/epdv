@@ -191,38 +191,29 @@ nBPdv := i_b_pdv
 nPdv := i_pdv
 
 do case 
-	case t_u_poup(cIdTar) .or. t_u_n_poup(cIdTar)
+
+	case t_u_poup(cIdTar)
 		_u_nab_21 += nBPdv
+		_u_pdv_41 += nPdv
 		
 	case t_u_uvoz(cIdTar)
 		_u_uvoz += nBPdv
+		_u_pdv_uv += nPdv
 		
-	case t_u_polj(cIdTar) .or. t_u_polj_0(cIdTar)
+	case t_u_polj(cIdTar)
 		_u_nab_23 += nBPdv
+		_u_pdv_43 += nPdv
 		
+	case t_u_polj_0(cIdTar)
+		_u_nab_23 += nBPdv
+	
+	otherwise
+		// sve ostale nabavke su 21
+		// ali se ne priznaje ulazni porez
+		_u_nab_21 += nBPdv
+			
 endcase
 
-
-if ROUND( g_pdv_stopa(cIdTar), 2) > 0
-	// oporezivo, obracunat pdv
-
-	nUkUlPdv += nPdv
-
-	if IsIno(id_part)
-		
-		// 42 - uvoz, na osnovu sifre partnera
-		_u_pdv_uv += nPdv
-	else
-		if t_u_polj(cIdTar)
-			_u_pdv_43 += nPdv
-		else
-			// sve ostalo moraju biti domaci obveznici
-			// sto nije uvoz i pdv za poljoprivr. nabavku
-			_u_pdv_41 += nPdv
-		endif
-	endif
-	
-endif
 
 SELECT KUF
 
