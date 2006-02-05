@@ -195,15 +195,19 @@ do case
 	case t_u_poup(cIdTar)
 		_u_nab_21 += nBPdv
 		_u_pdv_41 += nPdv
+		nUkUlPdv += nPdv
 		
 	case t_u_uvoz(cIdTar)
 		_u_uvoz += nBPdv
 		_u_pdv_uv += nPdv
+		nUkUlPdv += nPdv
+
 		
 	case t_u_polj(cIdTar)
 		_u_nab_23 += nBPdv
 		_u_pdv_43 += nPdv
-		
+		nUkUlPdv += nPdv
+
 	case t_u_polj_0(cIdTar)
 		_u_nab_23 += nBPdv
 	

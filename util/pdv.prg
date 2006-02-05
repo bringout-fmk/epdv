@@ -21,6 +21,21 @@ lRet := lRet .or. (cIdTar == PADR("PDV7NP", 6) )
 
 return lRet
 
+// -------------------------------
+// nabavke ne prizna je se ulazni porez
+// --------------------------------
+function t_u_n_poup(cIdTar)
+local lRet
+
+cIdTar := PADR(cIdTar, 6)
+
+lRet := .f.
+
+// standardne nabavke
+// nabavka poljoprivreda - oporezivo
+lRet := lRet .or. (cIdTar == PADR("PDV7NP", 6) )
+
+return lRet
 
 
 // -------------------------------
@@ -73,23 +88,6 @@ lRet := lRet .or. (cIdTar == PADR("PDV0PO", 6) )
 
 return lRet
 
-
-
-// -------------------------------
-// nabavke ne prizna je se ulazni porez
-// --------------------------------
-function t_u_n_poup(cIdTar)
-local lRet
-
-cIdTar := PADR(cIdTar, 6)
-
-lRet := .f.
-
-// standardne nabavke
-// nabavka poljoprivreda - oporezivo
-lRet := lRet .or. (cIdTar == PADR("PDV7NP", 6) )
-
-return lRet
 
 
 // -------------------------------

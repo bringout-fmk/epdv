@@ -41,7 +41,7 @@ local nLenIzn
 
 
 nLenIzn := LEN(PIC_IZN())
-aZaglLen:={8, 8, 8, 8, 65, 12, 80,  nLenIzn, nLenIzn, nLenIzn }
+aZaglLen:={8, 8, 8, 8, 65, 12, 80,  nLenIzn, nLenIzn, nLenIzn, nLenIzn }
 
 
 if nBrDok == nil
@@ -86,7 +86,8 @@ Box(, 10, 60)
   nX += 2
   
   @ m_x+nX, m_y+2 SAY "Tarifa (prazno svi) ?" GET cTar ;
-  	VALID { || empty(cTar) .or. P_Tarifa(@cTar) }
+  	VALID { || empty(cTar) .or. P_Tarifa(@cTar) } ;
+	PICT "@!"
   nX += 2
   
   @ m_x+nX, m_y+2 SAY REPLICATE("-", 30) 
@@ -150,9 +151,9 @@ else
 
 endif
 
-AADD(aZagl, { cPom11,  cPom21, "Datum", "Tar.",  "Dobavljac", "Broj",  "Opis",  "iznos" , "iznos",    "iznos" })
-AADD(aZagl, { cPom12,  cPom22,  "",     "kat.",      "(naziv, ident. broj)",      "RN",     "",    "bez PDV", "PDV", "sa PDV"})
-AADD(aZagl, { "(1)",   "(2)",  "(3)",   "(4)",   "(5)",  "(6)",     "(7)", "(8)" , "(9)" , "(10) = (8+9)" })
+AADD(aZagl, { cPom11,  cPom21, "Datum", "Tar.",  "Dobavljac", "Broj",  "Opis",  "iznos" , "izn.",    "izn. 2", "iznos" })
+AADD(aZagl, { cPom12,  cPom22,  "",     "kat.",      "(naziv, ident. broj)",      "RN",     "",    "bez PDV", "PDV", "PDV NP", "sa PDV"})
+AADD(aZagl, { "(1)",   "(2)",  "(3)",   "(4)",   "(5)",  "(6)",     "(7)", "(8)" , "(9)" ,  "(10)",  "(11) = (8+9+10)" })
 
 
 fill_rpt( nBrDok )
@@ -343,6 +344,8 @@ static function show_rpt()
 local nLenUk
 local nPom1
 local nPom2
+local nPdv
+local nPdv2
 
 nCurrLine := 0
 
@@ -362,8 +365,9 @@ SET ORDER TO TAG "1"
 go top
 nRbr := 0
 
-nBPdv := 0
-nPdv :=  0
+nUBPdv := 0
+nUPdv :=  0
+nUPdv2 :=  0
 do while !eof()
   
    ++ nCurrLine
@@ -420,18 +424,33 @@ do while !eof()
    // 8. bez pdv
    ?? TRANSFORM( i_b_pdv,  PIC_IZN() )
    ?? " "
-   
-   // 9. pdv
-   ?? TRANSFORM( i_pdv,  PIC_IZN() )
+
+
+   if t_u_n_poup(id_tar)
+  	nPdv := 0
+	nPdv2 := i_pdv
+   else
+	nPdv := i_pdv
+	nPdv2 := 0
+   endif
+
+   // 9. standardni pdv
+   ?? TRANSFORM( nPdv,  PIC_IZN() )
    ?? " "
-   
+	
+   // bez prava na odbitak
+   // 10. pdv NP  - neposlovne svrhe
+   ?? TRANSFORM( nPdv2,  PIC_IZN() )
+   ?? " "
+  
    // 10. sa pdv
    ?? TRANSFORM( i_b_pdv + i_pdv,  PIC_IZN() )
    ?? " "
 
 
-   nBPdv += i_b_pdv
-   nPdv += i_pdv
+   nUBPdv += i_b_pdv
+   nUPdv += nPdv 
+   nUPdv2 += nPdv2
    
    if nCurrLine > nPageLimit
    	FF
@@ -468,13 +487,16 @@ nLenUk -= 1
 
 ?? PADR( cPom , nLenUk )
 ?? " "
-?? TRANSFORM( nBPdv  , PIC_IZN() )
+?? TRANSFORM( nUBPdv  , PIC_IZN() )
 ?? " "
 
-?? TRANSFORM( nPdv  , PIC_IZN() )
+?? TRANSFORM( nUPdv  , PIC_IZN() )
 ?? " "
 
-?? TRANSFORM( nBPdv + nPdv  , PIC_IZN() )
+?? TRANSFORM( nUPdv2 , PIC_IZN() )
+?? " "
+
+?? TRANSFORM( nUBPdv + nUPdv + nUPdv2  , PIC_IZN() )
   
 r_linija()
   

@@ -87,7 +87,9 @@ Box(, 10, 60)
   nX += 2
   
   @ m_x+nX, m_y+2 SAY "Tarifa (prazno svi) ?" GET cTar ;
-  	VALID { || empty(cTar) .or. P_Tarifa(@cTar) }
+  	VALID { || empty(cTar) .or. P_Tarifa(@cTar) } ;
+	PICT "@!"
+
   nX += 2
   
   @ m_x+nX, m_y+2 SAY REPLICATE("-", 30) 
