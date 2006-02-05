@@ -13,6 +13,9 @@ function p_part(cId, dx, dy)
 *{
 local cN2Fin
 local i
+local cRet
+
+PushWa()
 
 PRIVATE ImeKol
 PRIVATE Kol
@@ -77,11 +80,13 @@ FOR i:=1 TO LEN(ImeKol)
 	AADD(Kol,i)
 NEXT
 
-PushWa()
-
 select (F_SIFK)
 if !used()
   O_SIFK
+endif
+
+select (F_SIFV)
+if !useD()
   O_SIFV
 endif
 
@@ -118,12 +123,15 @@ do while !eof() .and. ID="PARTN"
 
  skip
 enddo
-PopWa()
 
 private gTBDir:="N"
-return PostojiSifra(F_PARTN,1,10,60, "Lista Partnera", @cId, dx, dy, ;
+cRet :=PostojiSifra(F_PARTN,1,10,60, "Lista Partnera", @cId, dx, dy, ;
         {|Ch| k_handler(Ch)},,,,, {"ID"})
-*}
+
+
+PopWa()
+
+return cRet
 
 
 

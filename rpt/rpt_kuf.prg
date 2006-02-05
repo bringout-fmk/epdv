@@ -13,6 +13,7 @@ static cRptNaziv := "Izvjestaj KUF na dan "
 static cTbl := "KUF"
 
 static cTar := ""
+static cPart := ""
 
 static cRptBrDok := 0
 
@@ -59,6 +60,8 @@ else
 	cTar := cIdTarifa
 endif
 
+cPart := ""
+
 aDInt := rpt_d_interval (DATE())
 
 dDate := DATE()
@@ -72,9 +75,10 @@ if (nBrDok == -999)
 // treba zadati parametre izvjestaja
 
 cTar := PADR(cTar, 6)
+cPart := PADR(cPart, 6)
 
 nX:=1
-Box(, 10, 60)
+Box(, 11, 60)
 
   // izvjestaj za period
   @ m_x+nX, m_y+2 SAY "Period"
@@ -85,9 +89,15 @@ Box(, 10, 60)
   
   nX += 2
   
-  @ m_x+nX, m_y+2 SAY "Tarifa (prazno svi) ?" GET cTar ;
+  @ m_x+nX, m_y+2 SAY "Tarifa (prazno svi) ?  " GET cTar ;
   	VALID { || empty(cTar) .or. P_Tarifa(@cTar) } ;
 	PICT "@!"
+  nX += 1
+  
+  @ m_x+nX, m_y+2 SAY "Partner (prazno svi) ? " GET cPart ;
+  	VALID { || empty(cPart) .or. P_Part(@cPart) } ;
+	PICT "@!"
+
   nX += 2
   
   @ m_x+nX, m_y+2 SAY REPLICATE("-", 30) 
@@ -171,6 +181,7 @@ AADD(aArr, {"br_dok",   "N",  6, 0})
 AADD(aArr, {"datum",   "D",  8, 0})
 
 AADD(aArr, {"id_tar",   "C",  6, 0})
+AADD(aArr, {"id_part",   "C",  6, 0})
 
 AADD(aArr, {"dob_rn",   "C",  12, 0})
 AADD(aArr, {"dob_naz",   "C",  80, 0})
@@ -216,6 +227,7 @@ local cDobRn
 local cDobNaz
 local cIdTar
 local cOpis
+local cIdPart
 
 
 
@@ -267,6 +279,14 @@ if !empty(cTar)
 	cFilter += "id_tar == "+cm2str(cTar)
 endif
 
+if !empty(cPart)
+	if !empty(cFilter)
+		cFilter += " .and. "
+	endif
+	cFilter += "id_part == "+cm2str(cPart)
+endif
+
+
 
 #ifdef PROBA
 MsgBeep(cFilter)
@@ -305,12 +325,14 @@ dDatum := datum
 cDobRn := src_br_2
 cDobNaz := s_partner(id_part)
 cIdTar := id_tar
+cIdPart := id_part
 cOpis := opis
 
 SELECT r_kuf   
 APPEND BLANK
 
 
+replace id_part with cIdPart
 replace br_dok with nBrDok
 replace r_br with nRbr
 replace id_tar with cIdTar
