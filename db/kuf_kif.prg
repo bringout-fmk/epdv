@@ -214,7 +214,7 @@ use
 if (cTbl == "KUF")
 	o_kuf(.t.)
 else
-	o_kuf(.t.)
+	o_kif(.t.)
 endif	
 
 BoxC()

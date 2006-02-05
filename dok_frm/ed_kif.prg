@@ -52,7 +52,7 @@ static function tbl_priprema()
 Box(,20,77)
 @ m_x+18,m_y+2 SAY "<c-N>  Nove Stavke    | <ENT> Ispravi stavku   | <c-T> Brisi Stavku         "
 @ m_x+19,m_y+2 SAY "<c-A>  Ispravka Naloga| <c-P> Stampa dokumenta | <a-A> Azuriranje           "
-@ m_x+20,m_y+2 SAY "<a-P>  Povrat dok.    |"
+@ m_x+20,m_y+2 SAY "<a-P>  Povrat dok.    | <a-X> Renumeracija"
 
 private ImeKol
 private Kol
@@ -307,6 +307,16 @@ do case
 	
 	SELECT P_KIF
 	RETURN DE_REFRESH
+
+   case Ch==K_ALT_X
+   	
+	if Pitanje (, "Izvrsiti Renumeraciju ?" , "N" ) == "D"
+		renm_rbr("P_KIF", .f.)
+	endif
+
+	SELECT P_KIF
+	RETURN DE_REFRESH
+
 
    case (Ch == K_F10)
      	t_ost_opcije()

@@ -61,12 +61,15 @@ endif
 // kategorija partnera
 // 1-pdv obveznik
 // 2-ne pdv obvezink
+// 3-ino partner
 
 do case
 	case cKat == "1"
 		cPom := "PDV Obveznik"
 	case cKat == "2"
 		cPom := "Ne-PDV obvezik"
+	case cKat == "3"
+		cPom := "Ino partner"
 	otherwise
 		cPom := "Sve kategorije"
 endcase
