@@ -157,6 +157,7 @@ local dDMaxD
 
 local lSkip
 local nCijena
+local cBrFaktP
 
 // otvori kalk tabelu
 // ------------------------------------------
@@ -270,6 +271,7 @@ do while !eof()
 	SELECT kalk
 
 	cBrdok := kalk->brdok
+	
 	cIdTipDok := kalk->idvd
 	cIdFirma := kalk->IdFirma
 
@@ -362,7 +364,11 @@ do while !eof()
 	
 	dDMinD := datdok
 	dDMaxD := datdok
+
 	
+	// broj fakture partnera
+	cBrFaktP := kalk->brfaktp
+
 	do while !eof() .and. cBrDok == brdok .and. cIdTipDok == IdVd .and. cIdFirma == IdFirma
 		if lSkip
 			SKIP
@@ -465,10 +471,10 @@ do while !eof()
 		_src_br := cSBrDok
 		_src_br_2 := cSBrDok
 	else
-	
+			
 		// broj dokumenta
-		_src_br := cBrDok
-		_src_br_2 := cBrDok
+		_src_br := cBrFaktP
+		_src_br_2 := cBrFaktP
 	endif
 	
 
