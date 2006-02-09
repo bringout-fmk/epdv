@@ -74,10 +74,11 @@ static function set_a_kol( aKol, aImeKol )
 
 aImeKol := {}
 
-AADD(aImeKol, {"Br.dok", {|| TRANSFORM(br_dok, "99999")}, "r_br", {|| .t.}, {|| .t.} })
+AADD(aImeKol, {"Br.dok", {|| TRANSFORM(br_dok, "99999")}, "br_dok", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"R.br", {|| TRANSFORM(r_br, "99999")}, "r_br", {|| .t.}, {|| .t.} })
 
 AADD(aImeKol, {"Datum", {|| datum}, "datum", {|| .t.}, {|| .t.} })
+AADD(aImeKol, { PADR("Tarifa", 6), {|| id_tar }, "id_tar", {|| .t.}, {|| .t.} })
 AADD(aImeKol, { PADR("Dobavljac", 15), {|| PADR(s_partner(id_part), 13) + ".." }, "opis", {|| .t.}, {|| .t.} })
 AADD(aImeKol, { PADR("Br.dob - Opis", 17), {|| PADR(ALLTRIM(src_br_2) + "-" + opis, 15) + ".." }, "", {|| .t.}, {|| .t.} })
 AADD(aImeKol, {"Izn.b.pdv", {|| TRANSFORM(i_b_pdv, PIC_IZN()) }, "i_b_pdv", {|| .t.}, {|| .t.} })
