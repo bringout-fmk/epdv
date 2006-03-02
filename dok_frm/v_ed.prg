@@ -29,6 +29,7 @@ PopWa()
 return .t.
 
 // ------------------------------
+// partner
 // ------------------------------
 function v_part(cIdPart, cIdTar, cTbl, lShow)
 
@@ -49,6 +50,11 @@ if IsIno(cIdPart)
 			
 		endif
 	endif
+endif
+
+// uprava za indirektno oporezivanje
+if IsUio(cIdPart)
+	cIdTar := PADRI("UIO", 6)
 endif
 
 return .t.
