@@ -54,7 +54,7 @@ endif
 
 // uprava za indirektno oporezivanje
 if IsUio(cIdPart)
-	cIdTar := PADRI("UIO", 6)
+	cIdTar := PADR("UIO", 6)
 endif
 
 return .t.

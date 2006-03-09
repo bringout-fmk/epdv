@@ -186,6 +186,24 @@ else
 	endif
 endif
 
+// radno podrucje analitike cu koristiti za
+// suban_2 tabelu
+// suban_2 tabelu koristicu za pretragu naloga
+select (F_ANAL)
+if cPomPath <> cFinPath
+	cFinPath := cPomPath
+	if used()
+		use
+	endif
+	USE (cPomPath)
+else
+	if !used()
+		USE (cFinPath) alias suban_2
+		// "4","idFirma+IdVN+BrNal+Rbr
+		SET ORDER TO TAG "4"
+	endif
+endif
+
 if !(cPomSPath == cSifPath)
 
 	cSifPath := cPomSPath
@@ -229,7 +247,15 @@ PRIVATE cFilter := ""
 cFilter :=  cm2str(dDatOd) + " <= datdok .and. " + cm2str(dDatDo) + ">= datdok" 
 
 // setuj tip dokumenta
-cFilter :=  cFilter + ".and. IdVN == " + cm2str(cTdSrc)
+if !empty(cTdSrc)
+	if LEN(TRIM(cTdSrc)) == 1
+		// ako se stavi "B " onda se uzimaju svi nalozi koji pocinju
+		// sa B
+		cFilter :=  cFilter + ".and. IdVN = " + cm2str(TRIM(cTdSrc))
+	else
+		cFilter :=  cFilter + ".and. IdVN == " + cm2str(cTdSrc)
+	endif
+endif
 
 if !EMPTY(cTarFilter)
 	cFilter += ".and. " + cTarFilter
@@ -279,9 +305,20 @@ do while !eof()
 	_datum := suban->datdok
 	_id_part := suban->idpartner
 	_opis := cOpis
-
+	
+	// ##opis## je djoker - zamjenjuje se sa opisom koji se nalazi u 
+	// stavci
+	_opis := STRTRAN(_opis, "##opis##", ALLTRIM(suban->opis))
+	
 	if !empty(cIdPart)
-		_id_part := cIdPart
+		if (ALLTRIM(UPPER(cIdPart)) == "#TD#")
+			// trazi dobavljaca
+			_id_part := trazi_dob (suban->(recno()), ;
+			        suban->idfirma, suban->idvn, suban->brnal, ;
+				suban->brdok, suban->rbr)
+		else
+			_id_part := cIdPart
+		endif
 	endif
 
 	lIno := IsIno(_id_part)
@@ -585,4 +622,41 @@ endif
 nZ5 := nSpedTr
 
 return
+
+// -----------------------------------------------------------
+// trazi dobavljaca za trosak - mora biti u blizini - iznad ili
+// ispod samog troska
+// -----------------------------------------------------------
+static function trazi_dob(nRecNo, cIdFirma, cIdVn, cBrNal, cBrDok, nRbr)
+local i
+
+altd()
+PushWa()
+
+select suban_2
+
+for i:=-2 to 2
+
+//idi na zadati slog ...
+GO (nRecNo)
+// pa onda skoci dva unazad i dva unaprijed ...
+SKIP i
+
+
+cKto := LEFT(idkonto, 3 ) 
+
+if (cKto == "543" .or. cKto == "508") .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) .and. (BrDok == cBrDok)
+	// dobavljac
+	// ili kreditor
+	cIdPartner := idpartner
+
+	PopWa()
+	return cIdPartner
+endif
+
+next
+
+// nema nista - nisam nista nasao
+PopWa()
+return ""
 

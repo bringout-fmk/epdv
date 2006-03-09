@@ -172,3 +172,10 @@ if !used()
 endif
 
 return
+
+// ---------------------------------------------
+// da li se radi o specijalnom partneru
+//   - upravi za indirektno oporezivanje
+// ---------------------------------------------
+function IsUIO(cIdPartner)
+return IsProfil(cIdPartner, "UIO")

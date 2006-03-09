@@ -277,6 +277,7 @@ do case
 	close all
 	o_kuf(.t.)
 	SELECT P_KUF
+	SET ORDER TO TAG "br_dok"
 
      	return DE_REFRESH
 
