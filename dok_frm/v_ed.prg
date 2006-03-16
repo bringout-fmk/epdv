@@ -3,8 +3,9 @@
 // ----------------------------------------------
 // validacija
 // ----------------------------------------------
-function v_id_tar(cIdTar, nOsnov, nPdv,  nShow)
+function v_id_tar(cIdTar, nOsnov, nPdv,  nShow, lNova)
 local nStopa 
+local nPrerPdv
 
 PushWa()
 
@@ -16,7 +17,19 @@ SET ORDER TO TAG "ID"
 SEEK cIdTar
 nStopa := tarifa->opp
 
-nPdv := ROUND(nOsnov * nStopa / 100, ZAO_IZN())
+nPrerPdv := ROUND(nOsnov * nStopa / 100, ZAO_IZN())
+
+if lNova
+	// nema se sta pitati
+	nPdv := nPrerPdv
+else
+
+	if ((ROUND(nPrerPdv, 4) <> ROUND(nPdv, 4))) 
+		if Pitanje("", "Preracunati prema stopi PDV ?", "N") == "D"
+			nPdv :=	nPrerPdv
+		endif
+	endif
+endif
 
 if nShow <> nil
 	@ row(), nShow + 2 SAY "Tarifa:" + stopa_pdv(nStopa)

@@ -164,7 +164,11 @@ local nZ4
 local nZ5
 
 local lSkip
+local lSkip2
 local nIznos
+
+local cOpisSuban
+local nRecNoSuban
 
 // otvori suban tabelu
 // ------------------------------------------
@@ -301,6 +305,7 @@ do while !eof()
 	cIdTipDok := suban->IdVn
 	cIdFirma := suban->IdFirma
 
+	nRecnoSuban := suban->(recno())
 	// datum kuf-a
 	_datum := suban->datdok
 	_id_part := suban->idpartner
@@ -308,7 +313,8 @@ do while !eof()
 	
 	// ##opis## je djoker - zamjenjuje se sa opisom koji se nalazi u 
 	// stavci
-	_opis := STRTRAN(_opis, "##opis##", ALLTRIM(suban->opis))
+	cOpisSuban:= ALLTRIM(suban->opis) 
+	_opis := STRTRAN(_opis, "##opis##", cOpisSuban )
 	
 	if !empty(cIdPart)
 		if (ALLTRIM(UPPER(cIdPart)) == "#TD#")
@@ -398,11 +404,23 @@ do while !eof()
 	// tarifa koja se nalazi unutar dokumenta
 	cDokTar := ""
 	
-	
 	dDMinD := datdok
 	dDMaxD := datdok
 	
 	//do while !eof() .and. cBrDok == brnal .and. cIdTipDok == IdVN .and. cIdFirma == IdFirma
+
+		// zadaje se formula za tarifu
+		lSkip2 := .f.
+		if !EMPTY(cTarFormula)
+			if ! &(cTarFormula)
+				// npr. ABS(trazi_kto("5431")>0)
+				lSkip2 := .t.
+				SKIP 
+				LOOP
+			endif
+			
+		endif
+
 		if lSkip
 			SKIP
 			LOOP
@@ -466,13 +484,18 @@ do while !eof()
 	// za datum uzmi datum dokumenta ili najveci datum gore pronadjen
 	_datum := dDMax
 	
-	if lSkip
+	if lSkip .or. lSkip2
 		// vrati se gore
 		SELECT SUBAN
 		LOOP
 	endif
 	
-	
+	PRIVATE _uk_pdv :=  0
+	PushWa()
+	// --------------------------------------------------------------
+	SELECT SUBAN
+	go (nRecNoSuban)
+
 	_iznos := round(_iznos, nZaok2)
 	
 	if !empty(cIdTar)
@@ -483,19 +506,29 @@ do while !eof()
 		_id_tar := cDokTar
 	endif
 
-	if !EMPTY(cSBrDok)
+	do case
+	   case ALLTRIM(cSBrDok) == "#EXT#"
+	   	// extractuj ako je empty cBrDok
+		if EMPTY(cBrDok)
+			// ako nije stavljen broj dokumenta
+			// izvuci oznaku iz opisa
+			_src_br := extract_oznaka(cOpisSuban)
+			_src_br_2 := _src_br
+		else
+			_src_br := cBrDok
+			_src_br_2 := cBrDok
+		endif
+	   	
+	   case !EMPTY(cSBrDok)
 		_src_br := cSBrDok
 		_src_br_2 := cSBrDok
-	else
+	   otherwise
 	
 		// broj dokumenta
 		_src_br := cBrDok
 		_src_br_2 := cBrDok
-	endif
+	endcase
 
-	// u finu nemam info o tarifi
-	PRIVATE _uk_pdv :=  0
-	//PRIVATE _uk_pdv :=  _uk_b_pdv * (  g_pdv_stopa(_id_tar) / 100 )
 	
 	if !EMPTY(cFormBPDV)
 		_i_b_pdv := &cFormBPdv
@@ -512,7 +545,9 @@ do while !eof()
 		_i_pdv :=  _iznos/1.17*0.17
 	endif
 	_i_pdv := round(_i_pdv, nZaok)
-
+	// ----------------------------------------------------------
+	PopWa()
+	
 	// snimi gornje podatke
 	SELECT P_KUF
 	APPEND BLANK
@@ -630,7 +665,6 @@ return
 static function trazi_dob(nRecNo, cIdFirma, cIdVn, cBrNal, cBrDok, nRbr)
 local i
 
-altd()
 PushWa()
 
 select suban_2
@@ -659,4 +693,159 @@ next
 // nema nista - nisam nista nasao
 PopWa()
 return ""
+
+// -----------------------------------------------------------
+// trazi pdv za odredjenu fakturu dobavljaca
+// ispod samog troska
+// -----------------------------------------------------------
+function traz_pdv_dob(nRecNo, cIdFirma, cIdVn, cBrNal, cBrDok, nRbr, cOpis)
+local nPdvIznos 
+local i
+
+if nRecno == nil
+	nRecno := suban->(recno())
+	cIdFirma := suban->IdFirma
+	cIdVn := suban->IdVn
+	cBrNal := suban->brNal
+	cBrDok := suban->BrDok
+	nRbr := suban->Rbr
+	cOpis := suban->opis
+endif
+
+PushWa()
+
+select suban_2
+
+nPdvIznos := 0
+
+for i:=-15 to 15
+
+//idi na zadati slog ...
+GO (nRecNo)
+// pa onda skoci dva unazad i dva unaprijed ...
+SKIP i
+
+
+cKto := LEFT(idkonto, 3 ) 
+
+// 543 i 260 moraju imati identicnu oznaku broja dokumenta
+// ili u samom broju ili u opisu 
+
+if (cKto == "260" ) .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) .and. ;
+  ( (!empty(BrDok) .and. (BrDok == cBrDok)) .or. opis_i_oznaka(cOpis, opis) )
+
+	altd()
+	if d_p == "1"
+		// nasao sam stavku pdv-a koja se veze za dobavljaca
+		nPdvIznos := iznosbhd
+	else
+		//
+		nPdvIznos := -iznosbhd
+	endif
+	
+	PopWa()
+	return nPdvIznos
+endif
+
+next
+
+// nema nista - nisam nista nasao
+PopWa()
+return nPdvIznos
+
+
+// ----------------------------
+// opis ista oznaka
+// pretpostavlja se ovaj format
+// opis: "neki_tekst<SEPARATOR>oznaka"
+// oznaka slova brojeve
+// <SEPARATOR> = ".", SPACE
+// ----------------------------
+function opis_i_oznaka(cOpis1, cOpis2)
+local cOzn1, cOzn2
+
+cOzn1 := extract_oznaka(cOpis1)
+cOzn2 := extract_oznaka(cOpis2)
+
+if EMPTY(cOzn1) .or. EMPTY(cOzn2) 
+	return .f.
+endif
+
+return (cOzn1 == cOzn2)
+
+// ---------------------------------
+// ekstraktuje oznaku koja se nalazi
+// na kraju stringa
+// "SPEDITER 16/06 => "16/06"
+// "FAKT.DOB.16/06 => "16/06"
+// ---------------------------------
+static function extract_oznaka(cOpis)
+local i, nLen, cPom, cChar
+
+cPom:=""
+
+cOpis := TRIM(cOpis)
+nLen := LEN(cOpis)
+for i:=nLen to 1 step -1
+   cChar := SUBSTR(cOpis, i, 1)
+   if cChar $ " ."
+   	exit
+   else
+   	cPom := cChar + cPom 
+   endif
+next
+
+return cPom
+
+
+// -----------------------------------------------------------
+// trazi odredjeni konto unutar tekuceg naloga
+// -----------------------------------------------------------
+function trazi_kto(cIdKonto, nRecNo, cIdFirma, cIdVn, cBrNal, cBrDok, nRbr, cOpis)
+local nIznos := 0
+local i
+
+cIdKonto := PADR(cIdKonto, LEN(suban->IdKonto))
+if nRecno == nil
+	nRecno := suban->(recno())
+	cIdFirma := suban->IdFirma
+	cIdVn := suban->IdVn
+	cBrNal := suban->brNal
+	cBrDok := suban->BrDok
+	nRbr := suban->Rbr
+	cOpis := suban->opis
+endif
+
+PushWa()
+
+select suban_2
+
+for i:=-15 to 15
+
+//idi na zadati slog ...
+GO (nRecNo)
+// pa onda skoci dva unazad i dva unaprijed ...
+SKIP i
+
+
+if (cIdKonto == IdKonto ) .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) 
+
+	if (d_p == "1")
+		// nasao sam stavku koja je isti konto 
+		nIznos := iznosbhd
+	else
+		//
+		nIznos := -iznosbhd
+	endif
+	
+	PopWa()
+	return nIznos
+endif
+
+next
+
+// nema nista - nisam nista nasao
+PopWa()
+return nIznos
+
 

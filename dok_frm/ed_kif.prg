@@ -149,13 +149,14 @@ nX += 2
 ++nX
 
 @ m_x + nX, m_y+2 SAY "tarifa: " GET _id_tar ;
-	valid v_id_tar(@_id_tar, @_i_b_pdv, @_i_pdv,  col())  ;
+	valid v_id_tar(@_id_tar, @_i_b_pdv, @_i_pdv,  col(), lNova)  ;
 	PICT "@!"
 	
 ++nX
 
-@ m_x + nX, m_y+2 SAY "Iznos sa PDV: " GET _i_pdv ;
-        WHEN { || nI_s_pdv := _i_b_pdv + _i_pdv, .f. } ;
+@ m_x + nX, m_y+2 SAY "   Iznos PDV: " GET _i_pdv ;
+        WHEN { ||  .t. } ;
+	VALID { || nI_s_pdv := _i_b_pdv + _i_pdv, .t. } ;
 	PICT PIC_IZN()
 ++nX
 

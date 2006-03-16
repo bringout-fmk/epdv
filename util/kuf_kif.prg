@@ -125,7 +125,6 @@ return nLastRbr + 1
 function next_br_dok(cTblName)
 local nLastBrDok
 
-altd()
 
 PushWa()
 do case
@@ -143,4 +142,44 @@ nLastBrDok := br_dok
 PopWa()
 
 return nLastBrdok + 1
+
+
+// ------------------------
+// ------------------------
+function rn_g_r_br(cTblName)
+local nRbr
+
+// TAG: datum : "dtos(datum)+src_br_2"
+
+close all
+
+do case
+	case cTblName == "KUF"
+		O_KUF
+	case cTblName == "KIF"
+		O_KIF
+	
+endcase
+
+GO TOP
+nRbr := 1
+SET ORDER TO TAG "DATUM"
+
+if !FLOCK()
+	MsgBeep("Ne mogu zakljucati bazu " + cTblName + ;
+	 "## renumeracije nije izvrsena !")
+	 close all
+endif	 
+
+Box(,2, 35)
+do while !eof()
+	@ m_x+1, m_y+2 SAY "Renumeracija: G_R_BR " + STR(nRbr, 4, 0)
+	replace g_r_br with nRbr
+	nRbr++
+	SKIP
+enddo
+BoxC()
+
+close all
+return 
 
