@@ -108,6 +108,8 @@ private Izbor:=1
 private opc:={}
 private opcexe:={}
 
+say_fmk_ver()
+
 AADD(opc, "1. KUF unos/ispravka           ")
 
 if (ImaPravoPristupa(goModul:oDataBase:cName,"DOK","EDIT"))
