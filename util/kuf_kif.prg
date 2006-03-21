@@ -161,9 +161,10 @@ do case
 	
 endcase
 
-GO TOP
 nRbr := 1
 SET ORDER TO TAG "DATUM"
+
+GO TOP
 
 if !FLOCK()
 	MsgBeep("Ne mogu zakljucati bazu " + cTblName + ;
