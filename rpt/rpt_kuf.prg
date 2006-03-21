@@ -256,7 +256,7 @@ else
 	if !used()
 		O_KUF
 	endif
-	SET ORDER TO TAG "br_dok"
+	SET ORDER TO TAG "g_r_br"
 
 
 endif
