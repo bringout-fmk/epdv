@@ -46,6 +46,8 @@ Box(,5, 60)
 	kalk_kif(dDatOd, dDatDo)
 	
 	tops_kif(dDatOd, dDatDo)
+	
+	fin_kif(dDatOd, dDatDo)
 
 	renm_rbr("P_KIF", .f.)
 BoxC()
