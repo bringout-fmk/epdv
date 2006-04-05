@@ -669,7 +669,7 @@ PushWa()
 
 select suban_2
 
-for i:=-2 to 2
+for i:=-3 to 3
 
 //idi na zadati slog ...
 GO (nRecNo)
