@@ -594,7 +594,7 @@ AADD(aDBf,{ "id_tar"      , "C" ,   160,  0 })
 AADD(aDBf,{ "id_kto"      , "C" ,   160,  0 })
 
 // "PKONTO", "MKONTO" , "IDKONTO"
-AADD(aDBf,{ "id_kto"      , "C" ,   10,  0 })
+AADD(aDBf,{ "id_kto_naz"      , "C" ,   10,  0 })
 
 // svaki konto posebno
 // razbij za svaku tarifu posebno, ako ih ima vise
