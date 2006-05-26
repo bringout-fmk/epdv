@@ -7,7 +7,7 @@ liball:
 	make -C sif
 	make -C param
 	make -C util 
-	make -C exe exe
+	make -C exe exe 
 	
 
 cleanall:

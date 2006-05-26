@@ -37,8 +37,6 @@ AADD(opcexe, {|| rpt_p_pdv()})
 AADD(opc, "-------------------------")
 AADD(opcexe, {|| nil})
 
-AADD(opc, "6. test pdf")
-AADD(opcexe, {|| test_pdf()})
 
 Menu_SC("rpt")
 
