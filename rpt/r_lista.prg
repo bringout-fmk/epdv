@@ -241,7 +241,7 @@ nCurrLine := 0
 
 
 START PRINT CRET
-P_12CPI
+?
 
 nPageLimit := 65
 nRow := 0

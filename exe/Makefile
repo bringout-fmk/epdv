@@ -16,4 +16,6 @@ SCLIB_LIBS=sc1g_arh.lib sc1g_ba.lib sc1g_cui.lib sc1g_db.lib sc1g_os.lib sc1g_os
 
 MODUL_LIBS=epdv_m.lib epdv_db.lib epdv_dg.lib  epdv_rpt.lib epdv_df.lib epdv_sif.lib epdv_par.lib epdv_ut.lib
 
+e.obj : $(SC_BUILD_HOME_DIR)/sclib/sc.ch $(SC_BUILD_HOME_DIR)/sclib/std_cdx.ch ../epdv.ch
+
 include $(SC_BUILD_HOME_DIR)/sclib/Makefile_clipper

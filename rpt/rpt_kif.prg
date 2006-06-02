@@ -372,7 +372,7 @@ START PRINT CRET
 
 //nPageLimit := 65
 nPageLimit := 40
-?? "#%LANDS#"
+? "#%LANDS#"
 
 P_COND
 nRow := 0

@@ -477,7 +477,7 @@ local nPom2
 nCurrLine := 0
 
 START PRINT CRET
-
+?
 nPageLimit := 65
 
 nRow := 0
