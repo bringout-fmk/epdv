@@ -112,7 +112,6 @@ close all
 ferase ( PRIVPATH + "R_" +  cTbl + ".CDX" )
 ferase ( PRIVPATH + "R_" +  cTbl + ".DBF" )
 
-altd()
 aArr := get_pdv_fields()
 
 // kreiraj tabelu
@@ -144,6 +143,8 @@ static function f_iz_kuf_kif()
 local nBPdv
 local nUkIzPdv := 0
 local nUkUlPdv := 0
+// ulazni pdv koji je krajnja potrosnja firme
+local nUlPdvKp := 0
 
 O_R_PDV
 APPEND BLANK
@@ -211,6 +212,12 @@ do case
 	case t_u_polj_0(cIdTar)
 		_u_nab_23 += nBPdv
 	
+        case t_u_n_poup(cIdTar)
+		// sve ostale nabavke su 21
+		_u_nab_21 += nBPdv
+	        // ovaj pdv ide i u statistiku krajnje potrosnje
+	        nUlPdvKp += nPdv
+
 	otherwise
 		// sve ostale nabavke su 21
 		// ali se ne priznaje ulazni porez
@@ -250,6 +257,22 @@ MsgBeep(cFilter)
 O_KIF
 SET FILTER TO &cFilter
 GO TOP
+
+
+// ----------------------------------------------------------------------
+// dodaj u statistiku krajnju potrosnju iz ulaznog pdv-a
+// -----------------------------------------------------------------------
+if !empty(gUlPdvKp())
+	do case
+		   case gUlPdvKp() == "1"
+			_i_pdv_nr1 += nUlPdvKp
+		   case gUlPdvKp() == "2"
+			_i_pdv_nr2 += nUlPdvKp
+		   case gUlPdvKp() == "3"
+			_i_pdv_nr3 += nUlPdvKp
+		endcase
+	endif
+
 
 // KIF
 do while !eof()
@@ -300,15 +323,16 @@ if ROUND( g_pdv_stopa(cIdTar), 2) > 0
 			case cRejon == "3"
 				// bd
 				_i_pdv_nr3 += nPdv
-			
+		
 			case cRejon == "4"
-				// bd
+				// ovoga nema ali eto ... samo nam jos 
+				// jedan entitet fali :(
 				_i_pdv_nr4 += nPdv
 				
-			
 			otherwise
-				// federacija
+				// federacija je "1" ili nije nista stavljeno
 				_i_pdv_nr1 += nPdv
+
 		endcase
 	endif
 				
@@ -492,7 +516,7 @@ go top
 P_COND
 ? 
 ?? rpt_lm()
-?? PADL( "Obrazac P PDV, ver 01.10", RPT_COL * 2 + RPT_GAP )
+?? PADL( "Obrazac P PDV, ver 01.11", RPT_COL * 2 + RPT_GAP )
 
 ?
 ?? rpt_lm()

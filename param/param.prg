@@ -19,6 +19,15 @@ static gPIC_IZN
 // picture cijena
 static gPIC_CIJ
 
+// ulazni pdv koji se ne moze odbiti
+// da li ulazi u statistiku krajnje potrosnje
+// ako ulazi onda se stavlja polje u koje se dodaje
+// " " - ne dodajes u statistiku
+// "1" - federacija
+// "2" - sprski republikanci 
+// "3" - brcko district do las vegasa
+static gUlPdvKp := "1"
+
 // -------------------------------------
 // set parametre pri pokretanju modula
 // ------------------------------------
@@ -43,6 +52,8 @@ function ed_g_params()
 gPIC_IZN:= PADR(gPIC_IZN, 20)
 gPIC_CIJ:= PADR(gPIC_CIJ, 20)
 
+gUlPdvKp:= PADR(gUlPdvKp, 1)
+
 nX:=1
 Box(, 15, 70)
 
@@ -66,8 +77,14 @@ Box(, 15, 70)
  nX ++
  
  @ m_x + nX, m_y+2 SAY PADL(" cijena ", 30)   GET gPIC_CIJ
- nX ++
+ nX += 2
 
+ @ m_x + nX, m_y+2 SAY "3. Obracun ***"
+ nX ++
+ 
+ @ m_x + nX, m_y+2 SAY PADL(" ul. pdv kr.potr-stat fed-1, rs-2, bd-3", 55)   GET gUlPdvKp ;
+	VALID gUlPdvKp $ " 123"
+ nX ++
 
  READ
 
@@ -81,18 +98,17 @@ if lastkey()<>K_ESC
 endif
 
 return
-*}
 
 
 // --------------------------------------
 // --------------------------------------
 function read_g_params()
-*{
 gZAO_IZN := 2
 gZAO_CIJ := 3
 gZAO_PDV := 0
 gPIC_IZN := "9999999.99"
 gPIC_CIJ := "9999999.99"
+gUlPdvKp := "1"
 
 SELECT F_KPARAMS
 
@@ -110,12 +126,16 @@ RPar("Z3", @gZAO_PDV)
 RPar("P1", @gPIC_IZN)
 RPar("P2", @gPIC_CIJ)
 
+RPar("O1", @gUlPdvKp)
+
 close
 
 return
 
+
+// ---------------------------
+// ---------------------------
 function write_g_params()
-*{
 
 SELECT F_KPARAMS
 
@@ -132,6 +152,8 @@ WPar("Z3", gZAO_PDV)
 
 WPar("P1", gPIC_IZN)
 WPar("P2", gPIC_CIJ)
+
+WPar("O1", gUlPdvKp)
 
 close
 
@@ -232,4 +254,14 @@ if xVal <> nil
 	gPIC_CIJ := xVal
 endif
 return gPIC_CIJ
+
+
+// -------------------------------
+// -------------------------------
+function gUlPdvKp(xVal)
+if xVal <> nil
+	gUlPdvKp := xVal
+endif
+return gUlPdvKp
+
 
