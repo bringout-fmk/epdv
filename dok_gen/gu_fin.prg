@@ -33,8 +33,9 @@ static cKatP2
 // razbij po danima
 static cRazbDan
 
+// --------------------------------------
+// --------------------------------------
 function fin_kuf(dD1, dD2)
-*{
 local nCount
 local cIdfirma
 
