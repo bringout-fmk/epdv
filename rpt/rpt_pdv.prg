@@ -514,7 +514,7 @@ go top
 P_COND
 ? 
 ?? rpt_lm()
-?? PADL( "Obrazac P PDV, ver 01.11", RPT_COL * 2 + RPT_GAP )
+?? PADL( "Obrazac P PDV, ver 02.12", RPT_COL * 2 + RPT_GAP )
 
 ?
 ?? rpt_lm()
