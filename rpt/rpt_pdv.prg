@@ -394,11 +394,10 @@ _u_pdv_uk := nUkUlPdv
 
 _i_pdv_uk := nUkIzPdv 
 
-nPdvSaldo := _i_pdv_uk -  _u_pdv_uk 
-
-_pdv_uplatiti := nPdvSaldo
-
 zaok_p_pdv()
+
+nPdvSaldo := _i_pdv_uk -  _u_pdv_uk 
+_pdv_uplatiti := nPdvSaldo
 
 Gather()
 
@@ -441,8 +440,7 @@ _i_pdv_nr4 := ROUND(_i_pdv_nr4, ZAO_PDV())
 
 _u_pdv_uk := ROUND(_u_pdv_uk, ZAO_PDV()) 
 _i_pdv_uk := ROUND(_i_pdv_uk, ZAO_PDV()) 
-_pdv_uplatiti := ROUND(_pdv_uplatiti, ZAO_PDV()) 
-
+//_pdv_uplatiti := ROUND(_pdv_uplatiti, ZAO_PDV()) 
 
 return
 
