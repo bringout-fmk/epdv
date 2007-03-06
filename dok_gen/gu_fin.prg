@@ -829,7 +829,7 @@ GO (nRecNo)
 SKIP i
 
 
-if (cIdKonto == IdKonto ) .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) 
+if (cIdKonto == IdKonto ) .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) .and. (BrDok == cBrDok)
 
 	if (d_p == "1")
 		// nasao sam stavku koja je isti konto 
