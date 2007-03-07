@@ -290,11 +290,6 @@ do while !eof()
 				lSkip := .t.
 			endif
 	endcase
-		
-			
-	
-
-	
 	
 	nCount ++
 
@@ -303,8 +298,6 @@ do while !eof()
 	
  	cPom :="FAKT cnt : " + STR(nCount, 6)
 	@ m_x+4, m_y+2 SAY cPom
-	
-	
 	
 	// ove var moraju biti private da bi se mogle macro-om evaluirati
 	PRIVATE _uk_b_pdv := 0
@@ -336,9 +329,14 @@ do while !eof()
 				LOOP
 			endif
 		endif
-		
+	
+		// ako je avansna faktura setuj na PDV7AV
+		if ALLTRIM( fakt->idvrstep ) == "AV"
+			cDokTar := "PDV7AV"
+		endif
+
 		_id_tar := cDokTar
-		
+				
 		if !empty(cTarFormula)
 			// moze sadrzavati varijablu _id_tar
 			xDummy := &cTarFormula
@@ -370,7 +368,7 @@ do while !eof()
 	_uk_b_pdv := round(_uk_b_pdv, nZaok2)
 	_uk_popust := round(_popust, nZaok2)
 
-	if !empty(cIdTar)
+	if !empty(cIdTar) .and. cDokTar <> "PDV7AV"
 		// uzmi iz sg sifrarnika tarifu kojom treba setovati
 		_id_tar := cIdTar
 	else
@@ -387,6 +385,7 @@ do while !eof()
 		// nema formule koristi ukupan iznos bez pdv-a
 		_i_b_pdv := _uk_b_pdv
 	endif
+	
 	_i_b_pdv := round(_i_b_pdv, nZaok)
 	
 	if !EMPTY(cFormPDV)
