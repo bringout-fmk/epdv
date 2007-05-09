@@ -124,6 +124,7 @@ local cPom
 local cPartRejon
 local lPdvObveznik
 local lIno
+local lOslPoClanu
 
 local lSkip
 local lRet
@@ -233,6 +234,7 @@ do while !eof()
 		_id_part := cIdPart
 	endif
 
+	lOslPoClan := IsOslClan(_id_part)
 	lIno := IsIno(_id_part)
 	lPdvObveznik := IsPdvObveznik(_id_part)
 	
@@ -309,6 +311,7 @@ do while !eof()
 	SELECT FAKT
 	
 	do while !eof() .and. cBrDok == brdok .and. cIdTipDok == IdTipDok .and. cIdFirma == IdFirma
+		
 		if lSkip
 			SKIP
 			LOOP
@@ -329,14 +332,19 @@ do while !eof()
 				LOOP
 			endif
 		endif
-	
+
 		// ako je avansna faktura setuj na PDV7AV
 		if ALLTRIM( fakt->idvrstep ) == "AV"
 			cDokTar := "PDV7AV"
 		endif
+		
+		// ako je oslobodjen po clanu... PDV0
+		if lOslPoClanu == .t.
+			cDokTar := "PDV0  "
+		endif
 
 		_id_tar := cDokTar
-				
+			
 		if !empty(cTarFormula)
 			// moze sadrzavati varijablu _id_tar
 			xDummy := &cTarFormula
@@ -368,7 +376,7 @@ do while !eof()
 	_uk_b_pdv := round(_uk_b_pdv, nZaok2)
 	_uk_popust := round(_popust, nZaok2)
 
-	if !empty(cIdTar) .and. cDokTar <> "PDV7AV"
+	if !empty(cIdTar) .and. cDokTar <> "PDV7AV" .and. !lOslPoClanu
 		// uzmi iz sg sifrarnika tarifu kojom treba setovati
 		_id_tar := cIdTar
 	else
