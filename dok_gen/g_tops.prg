@@ -39,7 +39,6 @@ function tops_kif(dD1, dD2)
 local nCount
 local cIdfirma
 
-altd()
 
 dDatOd := dD1
 dDatDo := dD2
@@ -177,15 +176,6 @@ if !(cPomSPath == cSifPath)
 
 	cSifPath := cPomSPath
 
-	/*
-	SELECT F_PARTN
-	if used()
-		use
-	endif
-	USE (cSifPath + "PARTN")
-	SET ORDER TO TAG "ID"
-	*/
-	
 	SELECT F_ROBA
 	if used()
 		use
@@ -217,7 +207,6 @@ if !(cPomSPath == cSifPath)
 endif
 
 
-	
 SELECT POS
 PRIVATE cFilter := ""
 
@@ -318,34 +307,6 @@ do while !eof()
 
 	endcase
 
-	//cPartRejon := part_rejon(_id_part)
-	
-	/*
-	do case
-	
-		case cKatP2 == "1"
-			// samo federacija
-			if !((cPartRejon == " ") .or. (cPartRejon == "1"))
-				lSkip :=.t.
-			endif
-				
-		case cKatP2 == "2"
-			// nije rs, preskoci
-			if !(cPartRejon == "2")
-				lSkip := .t.
-			endif
-			
-		case cKatP2 == "3"
-			// nije bd, preskoci
-			if !(cPartRejon == "3")
-				lSkip := .t.
-			endif
-	endcase
-	*/	
-			
-	
-
-	
 	
 	nCount ++
 
@@ -354,8 +315,6 @@ do while !eof()
 	
  	cPom :="TOPS cnt : " + STR(nCount, 6)
 	@ m_x+4, m_y+2 SAY cPom
-	
-	
 	
 	
 	// tarifa koja se nalazi unutar dokumenta
@@ -405,8 +364,12 @@ do while !eof()
 		nCijena := cijena / (1 + g_pdv_stopa(cDokTar)/100 )
 		// u posu se pohranjuje vrijednost u KM popusta
 		// u odnosu na cijenu
+		
+		// vrati popust
 		nCPopust := tops_popust()
 		
+		// izracuna koliko je to bez pdv-a
+		nCPopust := nCPopust / (1 + g_pdv_stopa(cDokTar)/100 )
 
 		_uk_b_pdv += round( kolicina * (nCijena - nCPopust) , nZaok)
 		_popust +=  round( kolicina * ( nCPopust ) , nZaok)
