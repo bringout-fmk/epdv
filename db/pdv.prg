@@ -1,4 +1,4 @@
-#include "\dev\fmk\epdv\epdv.ch"
+#include "epdv.ch"
 
 // --------------------------------------------------------------------
 //                                   Copyright Sigma-com 2006

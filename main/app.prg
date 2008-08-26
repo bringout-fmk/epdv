@@ -1,26 +1,12 @@
-#include "\dev\fmk\epdv\epdv.ch"
-
-/*
- * ----------------------------------------------------------------
- *                                     Copyright Sigma-com software 
- * ----------------------------------------------------------------
- */
- 
-
- 
-/*! \fn TePDVModNew()
- *  \brief funkcija koja kreira TePdvMod objekat
- */
+#include "epdv.ch"
 
 function TePdvModNew()
-*{
 local oObj
 
 oObj:=TePDVMod():new()
 
 oObj:self:=oObj
 return oObj
-*}
 
 
 #include "class(y).ch"

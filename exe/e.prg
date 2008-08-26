@@ -1,14 +1,5 @@
-#include "\dev\fmk\epdv\epdv.ch"
+#include "epdv.ch"
 
-/*
- * ----------------------------------------------------------------
- *                                     Copyright Sigma-com software 
- * ----------------------------------------------------------------
- *
- */
-
-/*! \file fmk/fin/main/1g/e.prg
- */
 
 EXTERNAL DESCEND
 EXTERNAL RIGHT
