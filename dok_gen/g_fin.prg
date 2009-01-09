@@ -33,10 +33,14 @@ static cKatP2
 // razbij po danima
 static cRazbDan
 
-function fin_kif(dD1, dD2)
+function fin_kif(dD1, dD2, cSezona)
 *{
 local nCount
 local cIdfirma
+
+if cSezona == nil
+	cSezona := ""
+endif
 
 dDatOd := dD1
 dDatDo := dD2
@@ -125,7 +129,7 @@ do while !eof()
 		nZaok2 := zaok2
 	
 		// za jednu shema gen stavku formiraj kif
-		gen_sg_item()
+		gen_sg_item(cSezona)
 		
 	endif
 	
@@ -137,7 +141,7 @@ enddo
 
 // ------------------------------------------
 // ------------------------------------------
-static function  gen_sg_item()
+static function  gen_sg_item(cSezona)
 local cPomPath
 local cPomSPath
 
@@ -174,8 +178,8 @@ local nRecNoSuban
 // ------------------------------------------
 
 
-cPomPath :=  AddBs(ALLTRIM(sg_kif->s_path)) + "SUBAN"
-cPomSPath :=  AddBs(ALLTRIM(sg_kif->s_path_s)) 
+cPomPath :=  AddBs(ALLTRIM(sg_kif->s_path)) + sez_fill(cSezona) +  "SUBAN"
+cPomSPath :=  AddBs(ALLTRIM(sg_kif->s_path_s)) + sez_fill(cSezona) 
 
 select (F_SUBAN)
 if cPomPath <> cFinPath

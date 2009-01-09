@@ -29,10 +29,14 @@ static cKatP
 static cKatP2
 
 
-function fakt_kif(dD1, dD2)
+function fakt_kif(dD1, dD2, cSezona)
 *{
 local nCount
 local cIdfirma
+
+if cSezona == nil
+	cSezona := ""
+endif
 
 dDatOd := dD1
 dDatDo := dD2
@@ -102,7 +106,7 @@ do while !eof()
 		nZaok2 := zaok2
 	
 		// za jednu shema gen stavku formiraj kif
-		gen_sg_item()
+		gen_sg_item( cSezona )
 		
 	endif
 	
@@ -114,7 +118,7 @@ enddo
 
 // ------------------------------------------
 // ------------------------------------------
-static function  gen_sg_item()
+static function  gen_sg_item( cSezona )
 local cPomPath
 local cPomSPath
 
@@ -133,9 +137,8 @@ local nCijena
 // otvori fakt tabelu
 // ------------------------------------------
 
-
-cPomPath :=  AddBs(ALLTRIM(sg_kif->s_path)) + "FAKT"
-cPomSPath :=  AddBs(ALLTRIM(sg_kif->s_path_s)) 
+cPomPath :=  AddBs(ALLTRIM(sg_kif->s_path)) + sez_fill(cSezona) + "FAKT"
+cPomSPath :=  AddBs(ALLTRIM(sg_kif->s_path_s)) + sez_fill(cSezona) 
 
 select (F_FAKT)
 if cPomPath <> cFaktPath

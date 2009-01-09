@@ -10,13 +10,17 @@ function gen_kif()
 
 local dDatOd
 local dDatDo
+local cSezona
 
 dDatOd := DATE()
 dDatDo := DATE()
+cSezona := SPACE(4)
 
 Box(, 3, 40)
 	@ m_x+1, m_y+2 SAY "Datum do " GET dDatOd 
 	@ m_x+2, m_y+2 SAY "      do " GET dDatDo
+	@ m_x+3, m_y+2 SAY "sezona" GET cSezona
+	
 	READ
 BoxC()
 
@@ -41,13 +45,13 @@ endif
 
 
 Box(,5, 60)
-	fakt_kif(dDatOd, dDatDo)
+	fakt_kif(dDatOd, dDatDo, cSezona)
 	
-	kalk_kif(dDatOd, dDatDo)
+	kalk_kif(dDatOd, dDatDo, cSezona)
 	
-	tops_kif(dDatOd, dDatDo)
+	tops_kif(dDatOd, dDatDo, cSezona)
 	
-	fin_kif(dDatOd, dDatDo)
+	fin_kif(dDatOd, dDatDo, cSezona)
 
 	renm_rbr("P_KIF", .f.)
 BoxC()

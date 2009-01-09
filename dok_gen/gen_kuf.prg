@@ -9,15 +9,18 @@ function gen_kuf()
 
 local dDatOd
 local dDatDo
+local cSezona := SPACE(4)
 
 dDatOd := DATE()
 dDatDo := DATE()
 
-Box(, 4, 40)
+Box(, 6, 40)
 	@ m_x+1, m_y+2 SAY "Generacija KUF"
 	
 	@ m_x+3, m_y+2 SAY "Datum do " GET dDatOd 
 	@ m_x+4, m_y+2 SAY "      do " GET dDatDo
+	
+	@ m_x+6, m_y+2 SAY "sezona" GET cSezona
 	READ
 BoxC()
 
@@ -43,8 +46,8 @@ endif
 
 Box(,5, 60)
 	
-	kalk_kuf(dDatOd, dDatDo)
-	fin_kuf(dDatOd, dDatDo)
+	kalk_kuf(dDatOd, dDatDo, cSezona)
+	fin_kuf(dDatOd, dDatDo, cSezona)
 	
 	renm_rbr("P_KUF", .f.)
 BoxC()
