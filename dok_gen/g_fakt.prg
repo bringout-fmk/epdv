@@ -27,7 +27,8 @@ static cKatP
 // 2-rs
 // 3-bd
 static cKatP2
-
+static cRazbDan
+static cSBrDok
 
 function fakt_kif(dD1, dD2, cSezona)
 *{
@@ -78,6 +79,8 @@ do while !eof()
 		cKatP2 := kat_p_2
 	
 		cOpis := naz
+		cRazbDan := razb_dan
+		cSBrDok := s_br_dok
 		
 		PRIVATE cFormBPdv := form_b_pdv
 		PRIVATE cFormPdv := form_pdv
@@ -133,6 +136,12 @@ local lOslPoClanu
 local lSkip
 local lRet
 local nCijena
+
+local dDMin
+local dDMax
+
+local dDMinD
+local dDMaxD
 
 // otvori fakt tabelu
 // ------------------------------------------
@@ -223,6 +232,16 @@ do while !eof()
 	// ----------------------------------------------
 	
 	SELECT fakt
+	dDMin := datdok
+	dDMax := datdok
+
+	// ove var moraju biti private da bi se mogle macro-om evaluirati
+	PRIVATE _uk_b_pdv := 0
+	PRIVATE _popust := 0
+	
+	do while !eof() .and.  (datdok == dDMax)
+
+	SELECT fakt
 
 	cBrdok := fakt->brdok
 	cIdTipDok := fakt->idtipdok
@@ -305,19 +324,39 @@ do while !eof()
 	@ m_x+4, m_y+2 SAY cPom
 	
 	// ove var moraju biti private da bi se mogle macro-om evaluirati
-	PRIVATE _uk_b_pdv := 0
-	PRIVATE _popust := 0
+	//PRIVATE _uk_b_pdv := 0
+	//PRIVATE _popust := 0
 	
 	// tarifa koja se nalazi unutar dokumenta
 	cDokTar := ""
 	
 	SELECT FAKT
 	
+	dDMinD := datdok
+	dDMaxD := datdok
+
 	do while !eof() .and. cBrDok == brdok .and. cIdTipDok == IdTipDok .and. cIdFirma == IdFirma
 		
 		if lSkip
 			SKIP
 			LOOP
+		endif
+
+		// na nivou dokumenta utvrdi min/max datum
+		if dDMinD > datdok
+			dDMinD := datdok
+		endif
+
+		if dDMaxD < datdok
+			dDMaxD := datdok
+		endif
+
+		if dDMin > datdok
+			dDMin := datdok
+		endif
+
+		if dDMax < datdok
+			dDMax := datdok
 		endif
 
 		// pozicioniraj se na artikal u sifranriku robe
@@ -366,15 +405,45 @@ do while !eof()
 		skip
 	enddo
 
+	
+	if ( cRazbDan == "D" )
+		
+		// razbij po danima
+		if dDMinD <> dDMaxD
+			MsgBeep("U dokumentu " + cIdFirma + "-" + cIdTipDok + "-" + cBrDok + "  se nalaze datumi " + DTOC(dDMaxD) + "-" + DTOC(dDMaxD) + "##" + ;
+			"To nije uredu je se promet razbija po danima !!!")
+		endif
+		
+	endif
+
+	if cRazbDan <> "D"
+		// nije po danima
+		// za jedan dokument se uzima 
+		exit
+		// ako pak jeste "D" onda se vrti u petlji
+	endif
+
+	// datumski interval
+	enddo
+	
+	// za datum uzmi ovaj veci
+	_datum := dDMax
+
 	if lSkip
 		// vrati se gore
 		SELECT FAKT
 		LOOP
 	endif
-	
-	// broj dokumenta
-	_src_br := cBrDok
-	_src_br_2 := cBrDok
+
+	if !EMPTY( cSBrDok )
+		// broj dokumenta
+		_src_br := cSBrDok
+		_src_br_2 := cSBrDok
+	else
+		// broj dokumenta
+		_src_br := cBrDok
+		_src_br_2 := cBrDok
+	endif
 	
 	_uk_b_pdv := round(_uk_b_pdv, nZaok2)
 	_uk_popust := round(_popust, nZaok2)
@@ -405,6 +474,7 @@ do while !eof()
 		// nema formule koristi ukupan iznos bez pdv-a
 		_i_pdv :=  _uk_pdv
 	endif
+
 	_i_pdv := round(_i_pdv, nZaok)
 
 	// snimi gornje podatke

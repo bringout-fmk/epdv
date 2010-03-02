@@ -362,8 +362,6 @@ do while !eof()
 		cDokTar := pos->idTarifa
 		_id_tar := pos->idTarifa
 		
-		
-		
 		nCijena := cijena / (1 + g_pdv_stopa(cDokTar)/100 )
 		// u posu se pohranjuje vrijednost u KM popusta
 		// u odnosu na cijenu
@@ -409,7 +407,6 @@ do while !eof()
 		SELECT POS
 		LOOP
 	endif
-	
 	
 	_uk_b_pdv := round(_uk_b_pdv, nZaok2)
 	_uk_popust := round(_popust, nZaok2)
