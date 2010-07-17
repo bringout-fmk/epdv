@@ -58,7 +58,17 @@ nX:=1
 Box(, 15, 70)
 
  set cursor on
- @ m_x + nX, m_y+2 SAY "1. Zaokruzenje ***"
+
+ @ m_x + nX, m_y+2 SAY "1. Osnovni podaci ***"
+
+ nX++
+ 
+ @ m_x + nX , m_y+2 SAY "Firma:" GET gFirma
+ @ m_x + nX , col() + 1 SAY "Naziv:" GET gNFirma
+
+ nX += 2
+
+ @ m_x + nX, m_y+2 SAY "2. Zaokruzenje ***"
  nX++
  
  @ m_x + nX , m_y+2 SAY PADL("iznos ", 30)   GET gZAO_IZN PICT "9"
@@ -70,7 +80,7 @@ Box(, 15, 70)
  @ m_x + nX, m_y+2 SAY PADL(" podaci na pdv prijavi ", 30)   GET gZAO_PDV PICT "9"
  nX += 2
 
- @ m_x + nX, m_y+2 SAY "2. Prikaz ***"
+ @ m_x + nX, m_y+2 SAY "3. Prikaz ***"
  nX ++
  
  @ m_x + nX, m_y+2 SAY PADL(" iznos ", 30)   GET gPIC_IZN
@@ -109,6 +119,8 @@ gZAO_PDV := 0
 gPIC_IZN := "9999999.99"
 gPIC_CIJ := "9999999.99"
 gUlPdvKp := "1"
+gFirma := SPACE(2)
+gNFirma := SPACE(20)
 
 SELECT F_KPARAMS
 
@@ -127,6 +139,18 @@ RPar("P1", @gPIC_IZN)
 RPar("P2", @gPIC_CIJ)
 
 RPar("O1", @gUlPdvKp)
+
+
+SELECT F_PARAMS
+if !used()
+	O_PARAMS
+endif
+private cSection:="1"
+private cHistory:=" "
+private aHistory:={}
+
+Rpar("fn",@gNFirma)
+Rpar("ff",@gFirma)
 
 close
 
@@ -154,6 +178,17 @@ WPar("P1", gPIC_IZN)
 WPar("P2", gPIC_CIJ)
 
 WPar("O1", gUlPdvKp)
+
+SELECT F_PARAMS
+if !used()
+	O_PARAMS
+endif
+private cSection:="1"
+private cHistory:=" "
+private aHistory:={}
+
+WPar("ff", gFirma)
+WPar("fn", gNFirma)
 
 close
 
