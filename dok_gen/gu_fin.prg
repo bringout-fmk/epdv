@@ -684,7 +684,7 @@ SKIP i
 
 cKto := LEFT(idkonto, 3 ) 
 
-if (cKto == "541" .or. cKto == "508") .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) .and. (BrDok == cBrDok)
+if (cKto $ ALLTRIM(gL_kto_dob)) .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) .and. (BrDok == cBrDok)
 	// dobavljac
 	// ili kreditor
 	cIdPartner := idpartner
@@ -736,7 +736,7 @@ cKto := LEFT(idkonto, 3 )
 // 543 i 260 moraju imati identicnu oznaku broja dokumenta
 // ili u samom broju ili u opisu 
 
-if (cKto == "260" ) .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) .and. ;
+if cKto $ ALLTRIM(gKt_updv) .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) .and. ;
   ( (!empty(BrDok) .and. (BrDok == cBrDok)) .or. opis_i_oznaka(cOpis, opis) )
 
 	altd()

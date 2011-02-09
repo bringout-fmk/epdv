@@ -192,6 +192,10 @@ private aHistory:={}
 public gFirma:="10"
 public gNFirma:=space(20)  
 public gPicVrijednost := "9999999.99"
+public gL_kto_dob := PADR("541;", 100)
+public gL_kto_kup := PADR("211;", 100)
+public gKt_updv := PADR("260;", 100)
+public gKt_ipdv := PADR("560;", 100)
 
 ::super:setTGVars()
 
@@ -224,4 +228,7 @@ public cZabrana:="Opcija nedostupna za ovaj nivo !!!"
 
 return
 *}
+
+
+
 

@@ -55,7 +55,7 @@ gPIC_CIJ:= PADR(gPIC_CIJ, 20)
 gUlPdvKp:= PADR(gUlPdvKp, 1)
 
 nX:=1
-Box(, 15, 70)
+Box(, 20, 70)
 
  set cursor on
 
@@ -66,7 +66,7 @@ Box(, 15, 70)
  @ m_x + nX , m_y+2 SAY "Firma:" GET gFirma
  @ m_x + nX , col() + 1 SAY "Naziv:" GET gNFirma
 
- nX += 2
+ nX ++
 
  @ m_x + nX, m_y+2 SAY "2. Zaokruzenje ***"
  nX++
@@ -75,10 +75,10 @@ Box(, 15, 70)
  nX++
  
  @ m_x + nX, m_y+2 SAY PADL("cijena ", 30)   GET gZAO_CIJ PICT "9"
- nX += 2
+ nX++
  
  @ m_x + nX, m_y+2 SAY PADL(" podaci na pdv prijavi ", 30)   GET gZAO_PDV PICT "9"
- nX += 2
+ nX ++
 
  @ m_x + nX, m_y+2 SAY "3. Prikaz ***"
  nX ++
@@ -87,14 +87,32 @@ Box(, 15, 70)
  nX ++
  
  @ m_x + nX, m_y+2 SAY PADL(" cijena ", 30)   GET gPIC_CIJ
- nX += 2
+ nX ++
 
- @ m_x + nX, m_y+2 SAY "3. Obracun ***"
+ @ m_x + nX, m_y+2 SAY "4. Obracun ***"
  nX ++
  
  @ m_x + nX, m_y+2 SAY PADL(" ul. pdv kr.potr-stat fed-1, rs-2, bd-3", 55)   GET gUlPdvKp ;
 	VALID gUlPdvKp $ " 123"
  nX ++
+ 
+ @ m_x + nX, m_y+2 SAY "5. Ostalo ***"
+ nX ++
+ 
+ @ m_x + nX, m_y+2 SAY PADL(" konta dobavljaci:", 30) GET gL_kto_dob ;
+ 	PICT "@S30"
+ nX ++
+ 
+ @ m_x + nX, m_y+2 SAY PADL("      konta kupci:", 30) GET gL_kto_kup ;
+ 	PICT "@S30"
+ nX ++
+ 
+ @ m_x + nX, m_y+2 SAY PADL("ulazni pdv:", 30) GET gKt_updv ;
+ 	PICT "@S30"
+ nX ++
+ 
+ @ m_x + nX, m_y+2 SAY PADL("izlazni pdv:", 30) GET gKt_ipdv ;
+ 	PICT "@S30"
 
  READ
 
@@ -140,6 +158,10 @@ RPar("P2", @gPIC_CIJ)
 
 RPar("O1", @gUlPdvKp)
 
+RPar("K1", @gL_kto_dob)
+RPar("K2", @gL_kto_kup)
+RPar("K3", @gkt_updv)
+RPar("K4", @gkt_ipdv)
 
 SELECT F_PARAMS
 if !used()
@@ -178,6 +200,11 @@ WPar("P1", gPIC_IZN)
 WPar("P2", gPIC_CIJ)
 
 WPar("O1", gUlPdvKp)
+
+WPar("K1", gL_kto_dob)
+WPar("K2", gL_kto_kup)
+WPar("K3", gkt_updv)
+WPar("K4", gkt_ipdv)
 
 SELECT F_PARAMS
 if !used()

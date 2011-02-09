@@ -12,6 +12,7 @@ liball:
 
 cleanall:
 	make -C main clean
+	make -C exe clean
 	make -C db clean
 	make -C dok_gen clean
 	make -C dok_frm clean

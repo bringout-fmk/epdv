@@ -683,7 +683,7 @@ SKIP i
 
 cKto := LEFT(idkonto, 3 ) 
 
-if (cKto == "541" .or. cKto == "508") .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) .and. (BrDok == cBrDok)
+if (cKto $ ALLTRIM(gL_kto_dob) ) .and. (IdFirma ==  cIdFirma) .and. (IdVn == cIdVn) .and. (BrNal == cBrNal) .and. (BrDok == cBrDok)
 	// dobavljac
 	// ili kreditor
 	cIdPartner := idpartner

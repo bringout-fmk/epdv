@@ -143,6 +143,8 @@ local dDMax
 local dDMinD
 local dDMaxD
 
+local nF_rabat := 0
+
 // otvori fakt tabelu
 // ------------------------------------------
 
@@ -203,8 +205,6 @@ if !(cPomSPath == cSifPath)
 
 endif
 
-
-	
 SELECT FAKT
 PRIVATE cFilter := ""
 
@@ -212,7 +212,6 @@ cFilter :=  cm2str(dDatOd) + " <= datdok .and. " + cm2str(dDatDo) + ">= datdok"
 
 // setuj tip dokumenta
 cFilter :=  cFilter + ".and. IdTipDok == " + cm2str(cTdSrc)
-
 
 
 // "1","IdFirma+idtipdok+brdok+rbr+podbr"
@@ -335,6 +334,8 @@ do while !eof()
 	dDMinD := datdok
 	dDMaxD := datdok
 
+	nF_rabat := 0
+
 	do while !eof() .and. cBrDok == brdok .and. cIdTipDok == IdTipDok .and. cIdFirma == IdFirma
 		
 		if lSkip
@@ -362,6 +363,7 @@ do while !eof()
 		// pozicioniraj se na artikal u sifranriku robe
 		SELECT ROBA
 		seek fakt->idroba
+		
 		SELECT FAKT
 		PUBLIC cDokTar := roba->idTarifa
 
@@ -398,14 +400,21 @@ do while !eof()
 			nCijena := cijena
 		endif
 
-		_uk_b_pdv += round( kolicina * (nCijena * (1 - rabat/100)) , nZaok)
-		_popust +=  round( kolicina * ( nCijena *  rabat/100 ) , nZaok)
+		// rabat
+		nF_rabat := field->rabat
+
+		// da li je roba zasticena cijena
+		if RobaZastCijena(roba->idtarifa) .and. !lPdvObveznik
+			nF_rabat := 0
+		endif
+
+		_uk_b_pdv += round( kolicina * (nCijena * (1 - nF_rabat/100)) , nZaok)
+		_popust +=  round( kolicina * ( nCijena *  nF_rabat/100 ) , nZaok)
 		
 		SELECT FAKT
 		skip
 	enddo
 
-	
 	if ( cRazbDan == "D" )
 		
 		// razbij po danima
