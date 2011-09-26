@@ -1,0 +1,11 @@
+*.OBJ
+*.obj
+.svn
+*.LIB
+*.BAK
+*.lnk
+*.LST
+*~
+LST
+*.EXE
+
