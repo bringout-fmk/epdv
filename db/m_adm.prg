@@ -35,6 +35,8 @@ AADD(opc, "3. renumeracija g_r_br KUF")
 AADD(opcexe, {|| rn_gr("KUF")})
 AADD(opc, "4. renumeracija g_r_br KIF")
 AADD(opcexe, {|| rn_gr("KIF")})
+AADD(opc, "5. pregled podataka za F18")
+AADD(opcexe, {|| f18_test_data()})
 
 Menu_SC("adm")
 
