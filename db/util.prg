@@ -68,7 +68,7 @@ Box(, 2, 60 )
 
 do while !EOF()
 	
-	if EMPTY( field->br_dok )
+	if EMPTY( STR( field->br_dok, 10 ) )
 		skip
 		loop
 	endif
@@ -100,7 +100,7 @@ Box(, 2, 60 )
 
 do while !EOF()
 	
-	if EMPTY( field->br_dok )
+	if EMPTY( STR( field->br_dok, 10 ) )
 		skip
 		loop
 	endif
